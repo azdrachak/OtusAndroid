@@ -17,8 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".InviteActivity" />
-        <activity android:name=".Ocean11Activity" />
-        <activity android:name=".Ocean12Activity" />
+        <activity android:name=".DetailsActivity" />
     </application>
 
 </manifest>

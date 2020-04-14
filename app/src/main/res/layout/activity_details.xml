@@ -14,7 +14,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="16dp"
-        android:text="@string/ocean12ru"
+        android:text="Title"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         app:layout_constraintBottom_toTopOf="@+id/linearLayoutOcean11"
@@ -38,11 +38,10 @@
         app:layout_constraintTop_toBottomOf="@+id/pageNameTextView">
 
         <ImageView
-            android:id="@+id/ocean12Poster"
+            android:id="@+id/ocean11Poster"
             android:layout_width="wrap_content"
             android:layout_height="200dp"
-            android:contentDescription="@string/ocean_s_twelve_poster"
-            app:srcCompat="@drawable/ocean12" />
+            android:contentDescription="@string/ocean_s_eleven_poster" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -54,7 +53,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="24dp"
-        android:text="@string/ocean12_descr"
+        android:text="@android:string/fingerprint_icon_content_description"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

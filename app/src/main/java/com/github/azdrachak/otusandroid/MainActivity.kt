@@ -28,13 +28,21 @@ class MainActivity : AppCompatActivity() {
         detailsButtonOcean11.setOnClickListener {
             ocean11Title.setTextColor(visitedColor)
             ocean11visited = true
-            startActivity(Intent(this, Ocean11Activity::class.java))
+            val intent = Intent(this, DetailsActivity::class.java)
+            intent.putExtra("title", getStringFromRes(R.string.ocean11ru))
+            intent.putExtra("poster", R.drawable.ocean11)
+            intent.putExtra("description", getStringFromRes(R.string.ocean11_descr))
+            startActivity(intent)
         }
 
         detailsButtonOcean12.setOnClickListener {
             ocean12Title.setTextColor(visitedColor)
             ocean12visited = true
-            startActivity(Intent(this, Ocean12Activity::class.java))
+            val intent = Intent(this, DetailsActivity::class.java)
+            intent.putExtra("title", getStringFromRes(R.string.ocean12ru))
+            intent.putExtra("poster", R.drawable.ocean12)
+            intent.putExtra("description", getStringFromRes(R.string.ocean12_descr))
+            startActivity(intent)
         }
 
         inviteFriendButton.setOnClickListener {
@@ -53,4 +61,6 @@ class MainActivity : AppCompatActivity() {
             isVisited -> text.setTextColor(visitedColor)
             else -> text.setTextColor(regularColor)
         }
+
+    private fun getStringFromRes(id: Int): String = resources.getString(id)
 }
