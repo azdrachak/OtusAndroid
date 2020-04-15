@@ -1,3 +1,35 @@
 <resources>
     <string name="app_name">OtusAndroid</string>
+    <string name="mainActivityTitle">Поиск фильмов</string>
+    <string name="appName">Поиск фильмов</string>
+    <string name="ocean11ru">Одиннадцать друзей Оушена</string>
+    <string name="ocean12ru">Двенадцать друзей Оушена</string>
+    <string name="buttonDetails">Детали</string>
+    <string name="ocean_s_eleven_poster">Ocean\'s eleven poster</string>
+    <string name="ocean_s_twelve_poster">Ocean\'s twelve poster</string>
+    <string name="detailsButton">Детали</string>
+    <string name="movie_poster">Movie poster</string>
+    <string name="ocean11_descr">
+        После выхода из тюрьмы вора Дэнни Оушена не проходит и 24 часов,
+        а он уже планирует организовать самое сложное ограбление казино в истории. Он хочет украсть
+        160 млн американских долларов из трёх самых преуспевающих казино Лас-Вегаса.
+        Все эти казино принадлежат элегантному и в то же время жестокому дельцу Терри Бенедикту,
+        который только и мечтает о том, как встретится с бывшей женой Дэнни Оушена — Тесс.\n\n
+        Всего за одну ночь Дэнни подбирает команду из одиннадцати «специалистов»,
+        способных совершить эту дерзкую кражу. В команде Оушена оказываются первоклассный
+        карточный шулер, молодой искусный вор-карманник и гениальный разрушитель.
+        Чтобы совершить этот безумный и сложный грабёж, Оушену придётся рисковать своей жизнью.
+    </string>
+    <string name="ocean12_descr">
+        Гангстер Денни Оушен собрал свою банду профессиональных грабителей и мошенников, и теперь
+        там появились новые лица. Они задумали совершить три ограбления в европейских столицах.
+        Владелец казино Терри Бенедикт, которого Оушен ограбил в Лас-Вегасе, жаждет мести и
+        пытается настигнуть банду. За ней также охотятся агенты Европола и Диннер Джекет.
+    </string>
+    <string name="inviteFriendButton">Пригласить друга</string>
+    <string name="invitationTitle">Отправим письмо!</string>
+    <string name="emailHint">Email</string>
+    <string name="invitationSubject">Посмотри на это прекрасное приложение!</string>
+    <string name="sendButtonName">Отправить!</string>
+    <string name="invitationText">Оно ищет фильмы! (будет, наверное)</string>
 </resources>
