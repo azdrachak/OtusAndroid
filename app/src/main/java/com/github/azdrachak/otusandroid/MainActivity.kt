@@ -4,8 +4,10 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
     private var ocean11visited = false
@@ -48,6 +50,15 @@ class MainActivity : AppCompatActivity() {
         inviteFriendButton.setOnClickListener {
             startActivity(Intent(this, InviteActivity::class.java))
         }
+    }
+
+    override fun onBackPressed() {
+        val bld = AlertDialog.Builder(this)
+        bld.setTitle(R.string.exitTitle)
+        bld.setMessage(R.string.exitPrompt)
+        bld.setPositiveButton(R.string.exitYes) { _, _ -> super.onBackPressed() }
+        bld.setNegativeButton(R.string.exitNo) { dialog, _ -> dialog.cancel() }
+        bld.create().show()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

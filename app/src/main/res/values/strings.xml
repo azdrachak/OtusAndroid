@@ -33,4 +33,8 @@
     <string name="sendButtonName">Отправить!</string>
     <string name="invitationText">Оно ищет фильмы! (будет, наверное)</string>
     <string name="text_placeholder" translatable="false">Text placeholder</string>
+    <string name="exitPrompt">Точно хотите выйти?</string>
+    <string name="exitTitle">Выход</string>
+    <string name="exitYes">Да</string>
+    <string name="exitNo">Нет</string>
 </resources>
