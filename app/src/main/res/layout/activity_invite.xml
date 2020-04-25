@@ -13,29 +13,27 @@
 
         <TextView
             android:id="@+id/invitationNameTextView"
+            style="@style/TitleText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/invitationTitle"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+            android:text="@string/invitationTitle" />
 
         <EditText
             android:id="@+id/emailEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:autofillHints=""
             android:ems="10"
             android:hint="@string/emailHint"
-            android:inputType="textEmailAddress"
-            android:autofillHints="" />
+            android:inputType="textEmailAddress" />
 
         <EditText
             android:id="@+id/subjectEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:autofillHints=""
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="@string/invitationSubject"
-            android:autofillHints="" />
+            android:text="@string/invitationSubject" />
 
         <EditText
             android:id="@+id/contentsEditText"
@@ -49,8 +47,8 @@
 
         <Button
             android:id="@+id/sendButton"
+            style="@style/Button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:text="@string/sendButtonName" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

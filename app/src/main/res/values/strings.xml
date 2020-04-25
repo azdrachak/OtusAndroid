@@ -1,14 +1,14 @@
 <resources>
-    <string name="app_name">OtusAndroid</string>
+    <string name="app_name" translatable="false">OtusAndroid</string>
     <string name="mainActivityTitle">Поиск фильмов</string>
     <string name="appName">Поиск фильмов</string>
     <string name="ocean11ru">Одиннадцать друзей Оушена</string>
     <string name="ocean12ru">Двенадцать друзей Оушена</string>
     <string name="buttonDetails">Детали</string>
-    <string name="ocean_s_eleven_poster">Ocean\'s eleven poster</string>
-    <string name="ocean_s_twelve_poster">Ocean\'s twelve poster</string>
+    <string name="ocean_s_eleven_poster" translatable="false">Ocean\'s eleven poster</string>
+    <string name="ocean_s_twelve_poster" translatable="false">Ocean\'s twelve poster</string>
     <string name="detailsButton">Детали</string>
-    <string name="movie_poster">Movie poster</string>
+    <string name="movie_poster" translatable="false">Movie poster</string>
     <string name="ocean11_descr">
         После выхода из тюрьмы вора Дэнни Оушена не проходит и 24 часов,
         а он уже планирует организовать самое сложное ограбление казино в истории. Он хочет украсть
@@ -28,8 +28,13 @@
     </string>
     <string name="inviteFriendButton">Пригласить друга</string>
     <string name="invitationTitle">Отправим письмо!</string>
-    <string name="emailHint">Email</string>
+    <string name="emailHint" translatable="false">Email</string>
     <string name="invitationSubject">Посмотри на это прекрасное приложение!</string>
     <string name="sendButtonName">Отправить!</string>
     <string name="invitationText">Оно ищет фильмы! (будет, наверное)</string>
+    <string name="text_placeholder" translatable="false">Text placeholder</string>
+    <string name="exitPrompt">Точно хотите выйти?</string>
+    <string name="exitTitle">Выход</string>
+    <string name="exitYes">Да</string>
+    <string name="exitNo">Нет</string>
 </resources>
