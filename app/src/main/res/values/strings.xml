@@ -5,7 +5,7 @@
     <string name="ocean11ru">Одиннадцать друзей Оушена</string>
     <string name="ocean12ru">Двенадцать друзей Оушена</string>
     <string name="buttonDetails">Детали</string>
-    <string name="ocean_s_eleven_poster" translatable="false">Ocean\'s eleven poster</string>
+    <string name="poster_description" translatable="false">Ocean\'s eleven poster</string>
     <string name="ocean_s_twelve_poster" translatable="false">Ocean\'s twelve poster</string>
     <string name="detailsButton">Детали</string>
     <string name="movie_poster" translatable="false">Movie poster</string>
@@ -37,4 +37,9 @@
     <string name="exitTitle">Выход</string>
     <string name="exitYes">Да</string>
     <string name="exitNo">Нет</string>
+    <string name="movie_poster_desc">Постер к фильму</string>
+    <string name="addFavourite">Добавлено в избранное</string>
+    <string name="favouritesTitle">Избранное</string>
+    <string name="deleteFavourite">Удалено из избранного</string>
+    <string name="movieListTitle">Список фильмов</string>
 </resources>

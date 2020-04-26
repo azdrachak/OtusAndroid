@@ -17,4 +17,9 @@
     <string name="exitTitle">Exit</string>
     <string name="exitYes">Yes</string>
     <string name="exitNo">No</string>
+    <string name="movie_poster_desc">Movie poster</string>
+    <string name="addFavourite">Added to favourites</string>
+    <string name="favouritesTitle">Favourites</string>
+    <string name="deleteFavourite">Deleted from favourites</string>
+    <string name="movieListTitle">Movie list</string>
 </resources>
