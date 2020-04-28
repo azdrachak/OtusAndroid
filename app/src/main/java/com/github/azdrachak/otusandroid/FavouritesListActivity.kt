@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 
 class FavouritesListActivity : AppCompatActivity(), ItemClickListener {
+    private lateinit var recycler: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,9 +20,7 @@ class FavouritesListActivity : AppCompatActivity(), ItemClickListener {
     }
 
     private fun initRecycler() {
-        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        val recycler = findViewById<RecyclerView>(R.id.recyclerView)
-        recycler.layoutManager = layoutManager
+        recycler = findViewById(R.id.recyclerView)
         recycler.adapter =
             MovieListAdapter(LayoutInflater.from(this), Data.favouritesList, this)
 
@@ -45,5 +44,7 @@ class FavouritesListActivity : AppCompatActivity(), ItemClickListener {
         val toast =
             Toast.makeText(this, resources.getText(R.string.deleteFavourite), Toast.LENGTH_LONG)
         toast.show()
+        item.isFavorite = false
+        recycler.adapter!!.notifyDataSetChanged()
     }
 }

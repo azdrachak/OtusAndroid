@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity(), ItemClickListener {
 
+    lateinit var recycler: RecyclerView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -30,7 +32,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
     private fun initRecycler() {
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        val recycler = findViewById<RecyclerView>(R.id.recyclerView)
+        recycler = findViewById(R.id.recyclerView)
         recycler.layoutManager = layoutManager
         recycler.adapter = MovieListAdapter(LayoutInflater.from(this), Data.items, this)
 
@@ -52,6 +54,8 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         val toast =
             Toast.makeText(this, resources.getText(R.string.addFavourite), Toast.LENGTH_LONG)
         toast.show()
+        item.isFavorite = true
+        recycler.adapter!!.notifyDataSetChanged()
     }
 
     override fun onBackPressed() {
@@ -64,9 +68,12 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        recycler.adapter!!.notifyDataSetChanged()
         super.onRestoreInstanceState(savedInstanceState)
+    }
 
-//        val recycler = findViewById<RecyclerView>(R.id.recyclerView)
-//        recycler.layoutManager?.onRestoreInstanceState()
+    override fun onResume() {
+        recycler.adapter!!.notifyDataSetChanged()
+        super.onResume()
     }
 }

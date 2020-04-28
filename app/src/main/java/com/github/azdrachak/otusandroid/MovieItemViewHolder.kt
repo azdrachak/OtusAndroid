@@ -12,6 +12,10 @@ class MovieItemViewHolder(movieView: View) : RecyclerView.ViewHolder(movieView) 
     fun bind(item: MovieItem, itemClickListener: ItemClickListener) {
         poster.setImageResource(item.poster)
         title.text = item.title
+        itemView.findViewById<ImageView>(R.id.heart).setImageResource(
+            if (item.isFavorite) R.drawable.ic_favorite_paint_24dp
+            else R.drawable.ic_favorite_border_24dp
+        )
         itemView.setOnClickListener { itemClickListener.onItemClick(item) }
         itemView.setOnLongClickListener {
             itemClickListener.onItemLongClick(item)
