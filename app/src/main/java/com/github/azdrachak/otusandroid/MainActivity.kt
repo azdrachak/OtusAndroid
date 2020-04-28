@@ -50,11 +50,20 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
     }
 
     override fun onItemLongClick(item: MovieItem) {
-        Data.favouritesList.add(item)
-        val toast =
-            Toast.makeText(this, resources.getText(R.string.addFavourite), Toast.LENGTH_LONG)
-        toast.show()
-        item.isFavorite = true
+        if (!item.isFavorite) {
+            Data.favouritesList.add(item)
+            val toast =
+                Toast.makeText(this, resources.getText(R.string.addFavourite), Toast.LENGTH_LONG)
+            toast.show()
+            item.isFavorite = true
+
+        } else {
+            Data.favouritesList.remove(item)
+            val toast =
+                Toast.makeText(this, resources.getText(R.string.deleteFavourite), Toast.LENGTH_LONG)
+            toast.show()
+            item.isFavorite = false
+        }
         recycler.adapter!!.notifyDataSetChanged()
     }
 
