@@ -12,8 +12,8 @@ class DetailsActivity : AppCompatActivity() {
 
         intent?.let {
             pageNameTextView.text = it.getStringExtra("title")!!.toString()
-            ocean11Description.text = it.getStringExtra("description")!!.toString()
-            ocean11Poster.setImageResource(it.getIntExtra("poster",0))
+            movieDescription.text = it.getStringExtra("description")!!.toString()
+            detailsPoster.setImageResource(it.getIntExtra("poster",0))
         }
     }
 }
