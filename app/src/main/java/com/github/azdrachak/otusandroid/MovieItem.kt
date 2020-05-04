@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class MovieItem(
+    val id: String?,
     val title: String?,
     val description: String?,
     val poster: Int,
@@ -14,6 +15,7 @@ data class MovieItem(
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),
+        parcel.readString(),
         parcel.readInt(),
         parcel.readByte() != 0.toByte(),
         parcel.readByte() != 0.toByte()
@@ -21,6 +23,7 @@ data class MovieItem(
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(id)
         parcel.writeString(title)
         parcel.writeString(description)
         parcel.writeInt(poster)
