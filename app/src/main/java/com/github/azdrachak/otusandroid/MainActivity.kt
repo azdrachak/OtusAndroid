@@ -1,14 +1,12 @@
 package com.github.azdrachak.otusandroid
 
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
 import com.github.azdrachak.otusandroid.click.MovieItemListener
-import kotlinx.android.synthetic.main.activity_main.*
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.fragment_movie_list.*
 
 //TODO Сохранять положение скрола при перевороте
@@ -19,26 +17,39 @@ class MainActivity :
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragmentContainer, MovieListFragment(), MovieListFragment.TAG)
-            .commit()
+        loadFragment(MovieListFragment.TAG)
 
-        findViewById<View>(R.id.inviteFriendButton).setOnClickListener {
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.fragmentContainer, InviteFragment(), InviteFragment.TAG)
-                .addToBackStack(InviteFragment.TAG)
-                .commit()
+        findViewById<BottomNavigationView>(R.id.navigation).setOnNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.navigation_favorites -> {
+                    loadFragment(FavoritesFragment.TAG)
+                    true
+                }
+                R.id.navigation_invite -> {
+                    loadFragment(InviteFragment.TAG)
+                    true
+                }
+                R.id.navigation_home -> {
+                    loadFragment(MovieListFragment.TAG)
+                    true
+                }
+                else -> false
+            }
         }
 
-        findViewById<View>(R.id.favouritesButton).setOnClickListener {
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.fragmentContainer, FavoritesFragment(), FavoritesFragment.TAG)
-                .addToBackStack(FavoritesFragment.TAG)
-                .commit()
+    }
+
+    private fun loadFragment(fragmentTag: String) {
+        var fragment = supportFragmentManager.findFragmentByTag(fragmentTag)
+        if (fragment == null) {
+            when (fragmentTag) {
+                MovieListFragment.TAG -> fragment = MovieListFragment()
+                FavoritesFragment.TAG -> fragment = FavoritesFragment()
+                InviteFragment.TAG -> fragment = InviteFragment()
+            }
         }
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment!!, fragmentTag).commit()
     }
 
     override fun onAttachFragment(fragment: Fragment) {

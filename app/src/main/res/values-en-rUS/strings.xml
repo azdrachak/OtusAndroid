@@ -22,4 +22,5 @@
     <string name="favouritesTitle">Favourites</string>
     <string name="deleteFavourite">Deleted from favourites</string>
     <string name="movieListTitle">Movie list</string>
+    <string name="about">About</string>
 </resources>
