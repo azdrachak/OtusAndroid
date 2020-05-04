@@ -7,7 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 class MovieListAdapter(
     private val inflater: LayoutInflater,
     private val listItems: List<MovieItem>,
-    private val itemClickListener: ItemClickListener
+    private val clickListener: ((movieItem: MovieItem) -> Unit),
+    private val longClickListener: ((movieItem: MovieItem) -> Unit)
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -21,6 +22,15 @@ class MovieListAdapter(
     override fun getItemCount(): Int = listItems.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is MovieItemViewHolder) holder.bind(listItems[position], itemClickListener)
+        if (holder is MovieItemViewHolder) {
+            holder.bind(listItems[position])
+            holder.itemView.setOnClickListener {
+                clickListener(listItems[position])
+            }
+            holder.itemView.setOnLongClickListener {
+                longClickListener(listItems[position])
+                true
+            }
+        }
     }
 }

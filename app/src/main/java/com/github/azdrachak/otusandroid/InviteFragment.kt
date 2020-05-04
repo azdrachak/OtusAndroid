@@ -2,15 +2,29 @@ package com.github.azdrachak.otusandroid
 
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_invite.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.fragment_invite.*
 
-class InviteActivity : AppCompatActivity() {
+class InviteFragment : Fragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_invite)
+    companion object {
+        const val TAG = "InviteFragment"
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_invite, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         sendButton.setOnClickListener {
             sendEmail(
@@ -28,8 +42,6 @@ class InviteActivity : AppCompatActivity() {
             putExtra(Intent.EXTRA_SUBJECT, subject)
             putExtra(Intent.EXTRA_TEXT, text)
         }
-        if (intent.resolveActivity(packageManager) != null) {
-            startActivity(intent)
-        }
+        startActivity(intent)
     }
 }
