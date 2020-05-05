@@ -1,15 +1,14 @@
 package com.github.azdrachak.otusandroid
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.github.azdrachak.otusandroid.click.MovieItemListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_movie_list.*
 
-//TODO Сохранять положение скрола при перевороте
 class MainActivity :
     AppCompatActivity(), MovieItemListener {
 
@@ -36,20 +35,6 @@ class MainActivity :
                 else -> false
             }
         }
-
-    }
-
-    private fun loadFragment(fragmentTag: String) {
-        var fragment = supportFragmentManager.findFragmentByTag(fragmentTag)
-        if (fragment == null) {
-            when (fragmentTag) {
-                MovieListFragment.TAG -> fragment = MovieListFragment()
-                FavoritesFragment.TAG -> fragment = FavoritesFragment()
-                InviteFragment.TAG -> fragment = InviteFragment()
-            }
-        }
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, fragment!!, fragmentTag).commit()
     }
 
     override fun onAttachFragment(fragment: Fragment) {
@@ -65,20 +50,32 @@ class MainActivity :
     }
 
     override fun onMovieFavorite(movieItem: MovieItem) {
-        if (!movieItem.isFavorite) {
-            Data.favouritesList.add(movieItem)
-            val toast =
-                Toast.makeText(this, resources.getText(R.string.addFavourite), Toast.LENGTH_LONG)
-            toast.show()
-            movieItem.isFavorite = true
+        val action = if (movieItem.isFavorite) "delete" else "add"
 
-        } else {
+        val add = {
+            Data.favouritesList.add(movieItem)
+            movieItem.isFavorite = true
+        }
+
+        val delete = {
             Data.favouritesList.remove(movieItem)
-            val toast =
-                Toast.makeText(this, resources.getText(R.string.deleteFavourite), Toast.LENGTH_LONG)
-            toast.show()
             movieItem.isFavorite = false
         }
+
+        when (action) {
+            "add" -> add.invoke()
+            "delete" -> delete.invoke()
+        }
+
+        when (action) {
+            "add" -> showSnackbar(
+                resources.getText(R.string.addFavourite).toString(), movieItem
+            )
+            "delete" -> showSnackbar(
+                resources.getText(R.string.deleteFavourite).toString(), movieItem
+            )
+        }
+
         supportFragmentManager.fragments.last().recyclerView.adapter!!.notifyDataSetChanged()
     }
 
@@ -107,12 +104,23 @@ class MainActivity :
         }
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
+    private fun loadFragment(fragmentTag: String) {
+        var fragment = supportFragmentManager.findFragmentByTag(fragmentTag)
+        if (fragment == null) {
+            when (fragmentTag) {
+                MovieListFragment.TAG -> fragment = MovieListFragment()
+                FavoritesFragment.TAG -> fragment = FavoritesFragment()
+                InviteFragment.TAG -> fragment = InviteFragment()
+            }
+        }
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment!!, fragmentTag).commit()
     }
 
-    override fun onResume() {
-        super.onResume()
+    private fun showSnackbar(text: String, movieItem: MovieItem) {
+        val snackbar =
+            Snackbar.make(findViewById(R.id.fragmentContainer), text, Snackbar.LENGTH_LONG)
+        snackbar.setAction(R.string.undo) { onMovieFavorite(movieItem) }
+        snackbar.show()
     }
-
 }
