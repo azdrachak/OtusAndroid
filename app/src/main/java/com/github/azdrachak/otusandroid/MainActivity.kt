@@ -1,88 +1,126 @@
 package com.github.azdrachak.otusandroid
 
-import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.Fragment
+import com.github.azdrachak.otusandroid.click.MovieItemListener
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.fragment_movie_list.*
 
-class MainActivity : AppCompatActivity(), ItemClickListener {
-
-    lateinit var recycler: RecyclerView
+class MainActivity :
+    AppCompatActivity(), MovieItemListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        initRecycler()
+        loadFragment(MovieListFragment.TAG)
 
-        findViewById<View>(R.id.inviteFriendButton).setOnClickListener {
-            startActivity(Intent(this, InviteActivity::class.java))
-        }
-
-        findViewById<View>(R.id.favouritesButton).setOnClickListener {
-            startActivity(Intent(this, FavouritesListActivity::class.java))
+        findViewById<BottomNavigationView>(R.id.navigation).setOnNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.navigation_favorites -> {
+                    loadFragment(FavoritesFragment.TAG)
+                    true
+                }
+                R.id.navigation_invite -> {
+                    loadFragment(InviteFragment.TAG)
+                    true
+                }
+                R.id.navigation_home -> {
+                    loadFragment(MovieListFragment.TAG)
+                    true
+                }
+                else -> false
+            }
         }
     }
 
-    private fun initRecycler() {
-        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        recycler = findViewById(R.id.recyclerView)
-        recycler.layoutManager = layoutManager
-        recycler.adapter = MovieListAdapter(LayoutInflater.from(this), Data.items, this)
-
-        val itemDecorator = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
-        itemDecorator.setDrawable(getDrawable(R.drawable.divider)!!)
-        recycler.addItemDecoration(itemDecorator)
-    }
-
-    override fun onItemClick(item: MovieItem) {
-        val intent = Intent(this, DetailsActivity::class.java)
-        intent.putExtra("title", item.title)
-        intent.putExtra("poster", item.poster)
-        intent.putExtra("description", item.description)
-        startActivity(intent)
-    }
-
-    override fun onItemLongClick(item: MovieItem) {
-        if (!item.isFavorite) {
-            Data.favouritesList.add(item)
-            val toast =
-                Toast.makeText(this, resources.getText(R.string.addFavourite), Toast.LENGTH_LONG)
-            toast.show()
-            item.isFavorite = true
-
-        } else {
-            Data.favouritesList.remove(item)
-            val toast =
-                Toast.makeText(this, resources.getText(R.string.deleteFavourite), Toast.LENGTH_LONG)
-            toast.show()
-            item.isFavorite = false
+    override fun onAttachFragment(fragment: Fragment) {
+        super.onAttachFragment(fragment)
+        when (fragment) {
+            is MovieListFragment -> {
+                fragment.listener = this
+            }
+            is FavoritesFragment -> {
+                fragment.listener = this
+            }
         }
-        recycler.adapter!!.notifyDataSetChanged()
+    }
+
+    override fun onMovieFavorite(movieItem: MovieItem) {
+        val action = if (movieItem.isFavorite) "delete" else "add"
+
+        val add = {
+            Data.favouritesList.add(movieItem)
+            movieItem.isFavorite = true
+        }
+
+        val delete = {
+            Data.favouritesList.remove(movieItem)
+            movieItem.isFavorite = false
+        }
+
+        when (action) {
+            "add" -> add.invoke()
+            "delete" -> delete.invoke()
+        }
+
+        when (action) {
+            "add" -> showSnackbar(
+                resources.getText(R.string.addFavourite).toString(), movieItem
+            )
+            "delete" -> showSnackbar(
+                resources.getText(R.string.deleteFavourite).toString(), movieItem
+            )
+        }
+
+        supportFragmentManager.fragments.last().recyclerView.adapter!!.notifyDataSetChanged()
+    }
+
+    override fun onMovieSelected(movieItem: MovieItem) {
+        val bundle = Bundle()
+        bundle.putParcelable(Objects.MOVIE_ITEM.name, movieItem)
+        supportFragmentManager
+            .beginTransaction()
+            .replace(
+                R.id.fragmentContainer,
+                DetailsFragment.newInstance(bundle),
+                DetailsFragment.TAG
+            )
+            .addToBackStack(DetailsFragment.TAG)
+            .commit()
     }
 
     override fun onBackPressed() {
-        val bld = AlertDialog.Builder(this)
-        bld.setTitle(R.string.exitTitle)
-        bld.setMessage(R.string.exitPrompt)
-        bld.setPositiveButton(R.string.exitYes) { _, _ -> super.onBackPressed() }
-        bld.setNegativeButton(R.string.exitNo) { dialog, _ -> dialog.cancel() }
-        bld.create().show()
+        if (supportFragmentManager.backStackEntryCount > 0) super.onBackPressed() else {
+            val bld = AlertDialog.Builder(this)
+            bld.setTitle(R.string.exitTitle)
+            bld.setMessage(R.string.exitPrompt)
+            bld.setPositiveButton(R.string.exitYes) { _, _ -> super.onBackPressed() }
+            bld.setNegativeButton(R.string.exitNo) { dialog, _ -> dialog.cancel() }
+            bld.create().show()
+        }
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        recycler.adapter!!.notifyDataSetChanged()
-        super.onRestoreInstanceState(savedInstanceState)
+    private fun loadFragment(fragmentTag: String) {
+        var fragment = supportFragmentManager.findFragmentByTag(fragmentTag)
+        if (fragment == null) {
+            when (fragmentTag) {
+                MovieListFragment.TAG -> fragment = MovieListFragment()
+                FavoritesFragment.TAG -> fragment = FavoritesFragment()
+                InviteFragment.TAG -> fragment = InviteFragment()
+            }
+        }
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment!!, fragmentTag).commit()
     }
 
-    override fun onResume() {
-        recycler.adapter!!.notifyDataSetChanged()
-        super.onResume()
+    private fun showSnackbar(text: String, movieItem: MovieItem) {
+        val snackbar =
+            Snackbar.make(findViewById(R.id.fragmentContainer), text, Snackbar.LENGTH_LONG)
+        snackbar.setAction(R.string.undo) { onMovieFavorite(movieItem) }
+        snackbar.show()
     }
 }

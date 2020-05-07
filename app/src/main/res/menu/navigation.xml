@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/appName" />
+
+    <item
+        android:id="@+id/navigation_favorites"
+        android:icon="@drawable/ic_favorite_paint_24dp"
+        android:title="@string/favouritesTitle" />
+    <item
+        android:id="@+id/navigation_invite"
+        android:icon="@drawable/ic_email_black_24dp"
+        android:title="@string/inviteFriendButton" />
+</menu>
