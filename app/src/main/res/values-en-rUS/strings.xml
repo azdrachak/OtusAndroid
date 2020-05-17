@@ -15,4 +15,5 @@
     <string name="favouritesTitle">Favourites</string>
     <string name="deleteFavourite">Deleted from favourites</string>
     <string name="undo">Undo</string>
+    <string name="lang">en-US</string>
 </resources>

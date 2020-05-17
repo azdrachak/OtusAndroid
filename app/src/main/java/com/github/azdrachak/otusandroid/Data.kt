@@ -27,6 +27,7 @@ class Data {
                 "Ocean's 11",
                 ocean11desc,
                 R.drawable.ocean11,
+                "",
                 isFavorite = false,
                 isVisited = false
             ),
@@ -35,134 +36,7 @@ class Data {
                 "Ocean's 12",
                 ocean12desc,
                 R.drawable.ocean12,
-                isFavorite = false,
-                isVisited = false
-            ),
-            MovieItem(
-                UUID.randomUUID().toString(),
-                "Ocean's 11",
-                ocean11desc,
-                R.drawable.ocean11,
-                isFavorite = false,
-                isVisited = false
-            ),
-            MovieItem(
-                UUID.randomUUID().toString(),
-                "Ocean's 12",
-                ocean12desc,
-                R.drawable.ocean12,
-                isFavorite = false,
-                isVisited = false
-            ),
-            MovieItem(
-                UUID.randomUUID().toString(),
-                "Ocean's 11",
-                ocean11desc,
-                R.drawable.ocean11,
-                isFavorite = false,
-                isVisited = false
-            ),
-            MovieItem(
-                UUID.randomUUID().toString(),
-                "Ocean's 12",
-                ocean12desc,
-                R.drawable.ocean12,
-                isFavorite = false,
-                isVisited = false
-            ),
-            MovieItem(
-                UUID.randomUUID().toString(),
-                "Ocean's 11",
-                ocean11desc,
-                R.drawable.ocean11,
-                isFavorite = false,
-                isVisited = false
-            ),
-            MovieItem(
-                UUID.randomUUID().toString(),
-                "Ocean's 12",
-                ocean12desc,
-                R.drawable.ocean12,
-                isFavorite = false,
-                isVisited = false
-            ),
-            MovieItem(
-                UUID.randomUUID().toString(),
-                "Ocean's 11",
-                ocean11desc,
-                R.drawable.ocean11,
-                isFavorite = false,
-                isVisited = false
-            ),
-            MovieItem(
-                UUID.randomUUID().toString(),
-                "Ocean's 12",
-                ocean12desc,
-                R.drawable.ocean12,
-                isFavorite = false,
-                isVisited = false
-            ),
-            MovieItem(
-                UUID.randomUUID().toString(),
-                "Ocean's 11",
-                ocean11desc,
-                R.drawable.ocean11,
-                isFavorite = false,
-                isVisited = false
-            ),
-            MovieItem(
-                UUID.randomUUID().toString(),
-                "Ocean's 12",
-                ocean12desc,
-                R.drawable.ocean12,
-                isFavorite = false,
-                isVisited = false
-            ),
-            MovieItem(
-                UUID.randomUUID().toString(),
-                "Ocean's 11",
-                ocean11desc,
-                R.drawable.ocean11,
-                isFavorite = false,
-                isVisited = false
-            ),
-            MovieItem(
-                UUID.randomUUID().toString(),
-                "Ocean's 12",
-                ocean12desc,
-                R.drawable.ocean12,
-                isFavorite = false,
-                isVisited = false
-            ),
-            MovieItem(
-                UUID.randomUUID().toString(),
-                "Ocean's 11",
-                ocean11desc,
-                R.drawable.ocean11,
-                isFavorite = false,
-                isVisited = false
-            ),
-            MovieItem(
-                UUID.randomUUID().toString(),
-                "Ocean's 12",
-                ocean12desc,
-                R.drawable.ocean12,
-                isFavorite = false,
-                isVisited = false
-            ),
-            MovieItem(
-                UUID.randomUUID().toString(),
-                "Ocean's 11",
-                ocean11desc,
-                R.drawable.ocean11,
-                isFavorite = false,
-                isVisited = false
-            ),
-            MovieItem(
-                UUID.randomUUID().toString(),
-                "Ocean's 12",
-                ocean12desc,
-                R.drawable.ocean12,
+                "",
                 isFavorite = false,
                 isVisited = false
             )

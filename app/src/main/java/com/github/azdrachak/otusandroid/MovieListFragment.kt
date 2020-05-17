@@ -31,7 +31,7 @@ class MovieListFragment : Fragment() {
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
 
         recyclerView.adapter =
-            MovieListAdapter(LayoutInflater.from(activity), Data.items,
+            MovieListAdapter(LayoutInflater.from(activity), App.instance.items,
                 clickListener = { listener?.onMovieSelected(it) },
                 longClickListener = { listener?.onMovieFavorite(it) })
 
@@ -41,5 +41,17 @@ class MovieListFragment : Fragment() {
                 DividerItemDecoration.VERTICAL
             )
         )
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (!recyclerView.canScrollVertically(1)) {
+                    App.page++
+                    App.instance.getTopMovies(App.page)
+                    recyclerView.post {
+                        recyclerView.adapter!!.notifyDataSetChanged()
+                    }
+                }
+            }
+        })
     }
 }
