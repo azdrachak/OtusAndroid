@@ -7,7 +7,8 @@ data class MovieItem(
     val id: String?,
     val title: String?,
     val description: String?,
-    val poster: Int,
+    val poster: Int = R.drawable.ic_image_black_24dp,
+    val posterPath: String?,
     var isFavorite: Boolean,
     var isVisited: Boolean
 ) : Parcelable {
@@ -17,16 +18,17 @@ data class MovieItem(
         parcel.readString(),
         parcel.readString(),
         parcel.readInt(),
+        parcel.readString(),
         parcel.readByte() != 0.toByte(),
         parcel.readByte() != 0.toByte()
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)
         parcel.writeString(title)
         parcel.writeString(description)
         parcel.writeInt(poster)
+        parcel.writeString(posterPath)
         parcel.writeByte(if (isFavorite) 1 else 0)
         parcel.writeByte(if (isVisited) 1 else 0)
     }

@@ -18,4 +18,6 @@
     <string name="favouritesTitle">Избранное</string>
     <string name="deleteFavourite">Удалено из избранного</string>
     <string name="undo">Отмена</string>
+    <string name="lang">ru-RU</string>
+    <string name="splash_screen" translatable="false">Splash screen</string>
 </resources>

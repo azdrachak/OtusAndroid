@@ -1,6 +1,7 @@
 package com.github.azdrachak.otusandroid
 
 import android.os.Bundle
+import android.os.Handler
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -16,7 +17,13 @@ class MainActivity :
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        loadFragment(MovieListFragment.TAG)
+        loadFragment(SplashFragment.TAG)
+
+        Handler().postDelayed(
+            {
+                loadFragment(MovieListFragment.TAG)
+            }, 2500
+        )
 
         findViewById<BottomNavigationView>(R.id.navigation).setOnNavigationItemSelectedListener {
             when (it.itemId) {
@@ -108,6 +115,7 @@ class MainActivity :
         var fragment = supportFragmentManager.findFragmentByTag(fragmentTag)
         if (fragment == null) {
             when (fragmentTag) {
+                SplashFragment.TAG -> fragment = SplashFragment()
                 MovieListFragment.TAG -> fragment = MovieListFragment()
                 FavoritesFragment.TAG -> fragment = FavoritesFragment()
                 InviteFragment.TAG -> fragment = InviteFragment()
