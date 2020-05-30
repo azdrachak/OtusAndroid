@@ -1,8 +1,9 @@
 package com.github.azdrachak.otusandroid
 
 import android.app.Application
-import com.github.azdrachak.otusandroid.pojo.discover.Discover
-import com.github.azdrachak.otusandroid.retrofit.TmdbApi
+import com.github.azdrachak.otusandroid.model.MovieItem
+import com.github.azdrachak.otusandroid.model.pojo.discover.Discover
+import com.github.azdrachak.otusandroid.model.retrofit.TmdbApi
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -13,7 +14,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 class App : Application() {
     private lateinit var api: TmdbApi
     lateinit var discover: Discover
-    var items: MutableList<MovieItem> = mutableListOf()
+    var error = false
+    val items: MutableList<MovieItem> = mutableListOf()
+    val favouritesList: MutableList<MovieItem> = mutableListOf()
+
+    var appFirstRun = true
 
     companion object {
         lateinit var instance: App
@@ -35,22 +40,27 @@ class App : Application() {
         getTopMovies(page)
     }
 
-    fun getTopMovies(pageNumber: Int) {
+    fun getTopMovies(pageNumber: Int): String {
         instance.api.getCurrentTopFilms(
             API_KEY,
             resources.getString(language),
             sortBy,
             pageNumber
         ).enqueue(object : Callback<Discover?> {
+
             override fun onFailure(call: Call<Discover?>, t: Throwable) {
                 discover = Discover()
+                error = true
             }
 
             override fun onResponse(call: Call<Discover?>, response: Response<Discover?>) {
                 discover = response.body()!!
                 populateMovies(discover)
             }
+
         })
+
+        return if (error) resources.getString(R.string.dataError) else ""
     }
 
     private fun initRetrofit() {

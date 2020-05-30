@@ -1,6 +1,6 @@
-package com.github.azdrachak.otusandroid.retrofit
+package com.github.azdrachak.otusandroid.model.retrofit
 
-import com.github.azdrachak.otusandroid.pojo.discover.Discover
+import com.github.azdrachak.otusandroid.model.pojo.discover.Discover
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

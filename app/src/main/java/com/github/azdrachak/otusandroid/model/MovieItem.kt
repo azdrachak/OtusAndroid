@@ -1,7 +1,8 @@
-package com.github.azdrachak.otusandroid
+package com.github.azdrachak.otusandroid.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.github.azdrachak.otusandroid.R
 
 data class MovieItem(
     val id: String?,

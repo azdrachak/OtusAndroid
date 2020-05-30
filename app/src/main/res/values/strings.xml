@@ -20,4 +20,5 @@
     <string name="undo">Отмена</string>
     <string name="lang">ru-RU</string>
     <string name="splash_screen" translatable="false">Splash screen</string>
+    <string name="dataError">Ошибка получения данных</string>
 </resources>

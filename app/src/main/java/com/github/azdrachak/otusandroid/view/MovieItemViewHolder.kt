@@ -1,4 +1,4 @@
-package com.github.azdrachak.otusandroid
+package com.github.azdrachak.otusandroid.view
 
 import android.graphics.drawable.Drawable
 import android.view.View
@@ -11,6 +11,8 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.github.azdrachak.otusandroid.model.MovieItem
+import com.github.azdrachak.otusandroid.R
 
 class MovieItemViewHolder(private val movieView: View) : RecyclerView.ViewHolder(movieView) {
     private val poster: ImageView = movieView.findViewById(R.id.poster)

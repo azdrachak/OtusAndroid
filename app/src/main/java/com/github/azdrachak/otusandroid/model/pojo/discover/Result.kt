@@ -1,4 +1,4 @@
-package com.github.azdrachak.otusandroid.pojo.discover
+package com.github.azdrachak.otusandroid.model.pojo.discover
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
