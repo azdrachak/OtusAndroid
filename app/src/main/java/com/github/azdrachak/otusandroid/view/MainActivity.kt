@@ -1,29 +1,40 @@
-package com.github.azdrachak.otusandroid
+package com.github.azdrachak.otusandroid.view
 
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.github.azdrachak.otusandroid.click.MovieItemListener
+import androidx.lifecycle.ViewModelProvider
+import com.github.azdrachak.otusandroid.App
+import com.github.azdrachak.otusandroid.R
+import com.github.azdrachak.otusandroid.ilistener.MovieItemListener
+import com.github.azdrachak.otusandroid.model.MovieItem
+import com.github.azdrachak.otusandroid.viewmodel.MovieListViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.fragment_movie_list.*
 
 class MainActivity :
     AppCompatActivity(), MovieItemListener {
+
+    lateinit var viewModel: MovieListViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        loadFragment(SplashFragment.TAG)
+        viewModel = ViewModelProvider(this).get(MovieListViewModel::class.java)
 
-        Handler().postDelayed(
-            {
-                loadFragment(MovieListFragment.TAG)
-            }, 2500
-        )
+        if (App.instance.appFirstRun) {
+            loadFragment(SplashFragment.TAG)
+            App.instance.appFirstRun = false
+
+            Handler().postDelayed(
+                {
+                    loadFragment(MovieListFragment.TAG)
+                }, 2500
+            )
+        }
 
         findViewById<BottomNavigationView>(R.id.navigation).setOnNavigationItemSelectedListener {
             when (it.itemId) {
@@ -60,14 +71,15 @@ class MainActivity :
         val action = if (movieItem.isFavorite) "delete" else "add"
 
         val add = {
-            Data.favouritesList.add(movieItem)
+            App.instance.favouritesList.add(movieItem)
             movieItem.isFavorite = true
         }
 
         val delete = {
-            Data.favouritesList.remove(movieItem)
+            App.instance.favouritesList.remove(movieItem)
             movieItem.isFavorite = false
         }
+
 
         when (action) {
             "add" -> add.invoke()
@@ -83,17 +95,18 @@ class MainActivity :
             )
         }
 
-        supportFragmentManager.fragments.last().recyclerView.adapter!!.notifyDataSetChanged()
+        viewModel.onMovieFavorite()
     }
 
     override fun onMovieSelected(movieItem: MovieItem) {
-        val bundle = Bundle()
-        bundle.putParcelable(Objects.MOVIE_ITEM.name, movieItem)
+
+        viewModel.onMovieSelect(movieItem)
+
         supportFragmentManager
             .beginTransaction()
             .replace(
                 R.id.fragmentContainer,
-                DetailsFragment.newInstance(bundle),
+                DetailsFragment(),
                 DetailsFragment.TAG
             )
             .addToBackStack(DetailsFragment.TAG)
@@ -115,10 +128,14 @@ class MainActivity :
         var fragment = supportFragmentManager.findFragmentByTag(fragmentTag)
         if (fragment == null) {
             when (fragmentTag) {
-                SplashFragment.TAG -> fragment = SplashFragment()
-                MovieListFragment.TAG -> fragment = MovieListFragment()
-                FavoritesFragment.TAG -> fragment = FavoritesFragment()
-                InviteFragment.TAG -> fragment = InviteFragment()
+                SplashFragment.TAG -> fragment =
+                    SplashFragment()
+                MovieListFragment.TAG -> fragment =
+                    MovieListFragment()
+                FavoritesFragment.TAG -> fragment =
+                    FavoritesFragment()
+                InviteFragment.TAG -> fragment =
+                    InviteFragment()
             }
         }
         supportFragmentManager.beginTransaction()

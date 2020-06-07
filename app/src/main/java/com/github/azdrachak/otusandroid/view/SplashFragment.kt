@@ -1,10 +1,11 @@
-package com.github.azdrachak.otusandroid
+package com.github.azdrachak.otusandroid.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.github.azdrachak.otusandroid.R
 
 class SplashFragment : Fragment() {
 

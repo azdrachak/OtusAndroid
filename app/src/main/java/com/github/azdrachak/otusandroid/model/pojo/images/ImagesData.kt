@@ -1,4 +1,4 @@
-package com.github.azdrachak.otusandroid.pojo.images
+package com.github.azdrachak.otusandroid.model.pojo.images
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

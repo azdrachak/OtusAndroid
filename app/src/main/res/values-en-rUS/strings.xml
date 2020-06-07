@@ -16,4 +16,5 @@
     <string name="deleteFavourite">Deleted from favourites</string>
     <string name="undo">Undo</string>
     <string name="lang">en-US</string>
+    <string name="dataError">Data error</string>
 </resources>
