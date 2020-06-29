@@ -75,7 +75,7 @@ class MovieListFragment : Fragment() {
             this.viewLifecycleOwner,
             Observer { movieList ->
                 adapter.setItems(movieList!!)
-//                adapter.notifyDataSetChanged()
+                viewModel.cacheMovies(movieList)
             }
         )
 

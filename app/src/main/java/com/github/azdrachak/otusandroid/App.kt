@@ -3,6 +3,7 @@ package com.github.azdrachak.otusandroid
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.github.azdrachak.otusandroid.model.MovieItem
+import com.github.azdrachak.otusandroid.model.db.MoviesDb
 import com.github.azdrachak.otusandroid.model.pojo.discover.Discover
 import com.github.azdrachak.otusandroid.model.retrofit.TmdbApi
 import okhttp3.OkHttpClient
@@ -18,6 +19,7 @@ class App : Application() {
     var error = false
     val items: MutableList<MovieItem> = mutableListOf()
     val favouritesList: MutableList<MovieItem> = mutableListOf()
+    lateinit var db: MoviesDb
 
     var appFirstRun = true
 
@@ -38,6 +40,7 @@ class App : Application() {
         super.onCreate()
         instance = this
         initRetrofit()
+        db = MoviesDb.getInstance(this.applicationContext)
     }
 
     fun getTopMovies(pageNumber: Int, progress: MutableLiveData<Boolean>): String {
@@ -80,13 +83,12 @@ class App : Application() {
     private fun populateMovies(discover: Discover) {
         discover.results?.forEach {
             val movieItem = MovieItem(
-                id = it.id.toString(),
+                movieId = it.id,
                 title = it.title,
                 description = it.overview,
                 poster = 0,
                 posterPath = IMAGE_BASE_URL + it.posterPath,
-                isFavorite = false,
-                isVisited = false
+                isFavorite = false
             )
             items.add(movieItem)
         }

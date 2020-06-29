@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.azdrachak.otusandroid.App
 import com.github.azdrachak.otusandroid.model.MovieItem
+import com.github.azdrachak.otusandroid.view.Repository
 
 class MovieListViewModel : ViewModel() {
 
@@ -13,6 +14,8 @@ class MovieListViewModel : ViewModel() {
     private var selectedMovieLiveData = MutableLiveData<MovieItem>()
     private var errorLiveData = MutableLiveData<String>()
     var progress = MutableLiveData<Boolean>()
+
+    val repository = Repository()
 
     init {
         moviesLiveData.postValue(App.instance.items)
@@ -48,8 +51,11 @@ class MovieListViewModel : ViewModel() {
         if (App.instance.error) {
             App.page--
             errorLiveData.postValue(message)
-        } else moviesLiveData.value = App.instance.items
+        } else moviesLiveData.postValue(App.instance.items)
+
     }
+
+    fun cacheMovies(movies: List<MovieItem>) = repository.addMovies(movies)
 
     fun onErrorShow() {
         errorLiveData.value = null
