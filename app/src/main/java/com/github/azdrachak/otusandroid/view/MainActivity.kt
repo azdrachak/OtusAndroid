@@ -26,13 +26,15 @@ class MainActivity :
         viewModel = ViewModelProvider(this).get(MovieListViewModel::class.java)
 
         if (App.instance.appFirstRun) {
+            viewModel.moreMovies()
+
             loadFragment(SplashFragment.TAG)
             App.instance.appFirstRun = false
 
             Handler().postDelayed(
                 {
                     loadFragment(MovieListFragment.TAG)
-                }, 2500
+                }, 1000
             )
         }
 

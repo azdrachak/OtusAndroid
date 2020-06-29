@@ -1,6 +1,7 @@
 package com.github.azdrachak.otusandroid
 
 import android.app.Application
+import androidx.lifecycle.MutableLiveData
 import com.github.azdrachak.otusandroid.model.MovieItem
 import com.github.azdrachak.otusandroid.model.pojo.discover.Discover
 import com.github.azdrachak.otusandroid.model.retrofit.TmdbApi
@@ -37,10 +38,10 @@ class App : Application() {
         super.onCreate()
         instance = this
         initRetrofit()
-        getTopMovies(page)
     }
 
-    fun getTopMovies(pageNumber: Int): String {
+    fun getTopMovies(pageNumber: Int, progress: MutableLiveData<Boolean>): String {
+        progress.postValue(true)
         instance.api.getCurrentTopFilms(
             API_KEY,
             resources.getString(language),
@@ -56,6 +57,7 @@ class App : Application() {
             override fun onResponse(call: Call<Discover?>, response: Response<Discover?>) {
                 discover = response.body()!!
                 populateMovies(discover)
+                progress.postValue(false)
             }
 
         })

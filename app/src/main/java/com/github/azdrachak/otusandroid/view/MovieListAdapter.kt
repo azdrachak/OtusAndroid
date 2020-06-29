@@ -48,5 +48,6 @@ class MovieListAdapter(
                 listItems.add(it)
             }
         }
+        notifyDataSetChanged()
     }
 }

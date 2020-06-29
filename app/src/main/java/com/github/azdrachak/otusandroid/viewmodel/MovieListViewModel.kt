@@ -12,10 +12,12 @@ class MovieListViewModel : ViewModel() {
     private var favoriteMoviesLiveData = MutableLiveData<List<MovieItem>>()
     private var selectedMovieLiveData = MutableLiveData<MovieItem>()
     private var errorLiveData = MutableLiveData<String>()
+    var progress = MutableLiveData<Boolean>()
 
     init {
         moviesLiveData.postValue(App.instance.items)
         favoriteMoviesLiveData.postValue(App.instance.favouritesList)
+        progress.postValue(false)
     }
 
     val movies: LiveData<List<MovieItem>>
@@ -41,7 +43,7 @@ class MovieListViewModel : ViewModel() {
 
     fun moreMovies() {
         App.page++
-        val message = App.instance.getTopMovies(App.page)
+        val message = App.instance.getTopMovies(App.page, progress)
 
         if (App.instance.error) {
             App.page--

@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
-import com.github.azdrachak.otusandroid.App
 import com.github.azdrachak.otusandroid.R
 import com.github.azdrachak.otusandroid.ilistener.MovieItemListener
 import com.github.azdrachak.otusandroid.model.MovieItem
@@ -42,6 +42,8 @@ class MovieListFragment : Fragment() {
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
 
+        val progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
+
         val adapter =
             MovieListAdapter(LayoutInflater.from(
                 activity
@@ -58,18 +60,28 @@ class MovieListFragment : Fragment() {
             )
         )
 
+        viewModel.progress.observe(
+            this.viewLifecycleOwner,
+            Observer { inProgress ->
+                if (inProgress) {
+                    progressBar.visibility = View.VISIBLE
+                } else {
+                    progressBar.visibility = View.GONE
+                }
+            }
+        )
 
         viewModel.movies.observe(
             this.viewLifecycleOwner,
             Observer { movieList ->
                 adapter.setItems(movieList!!)
-                adapter.notifyDataSetChanged()
+//                adapter.notifyDataSetChanged()
             }
         )
 
         viewModel.error.observe(this.viewLifecycleOwner,
-            Observer {
-                if (App.instance.error && it != null) {
+            Observer { message ->
+                message?.let {
                     Toast.makeText(this.requireContext(), it, Toast.LENGTH_LONG).show()
                     viewModel.onErrorShow()
                 }
