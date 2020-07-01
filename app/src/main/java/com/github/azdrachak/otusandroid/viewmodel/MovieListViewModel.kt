@@ -10,16 +10,18 @@ import com.github.azdrachak.otusandroid.view.Repository
 class MovieListViewModel : ViewModel() {
 
     private var moviesLiveData = MutableLiveData<List<MovieItem>>()
-    private var favoriteMoviesLiveData = MutableLiveData<List<MovieItem>>()
+    val cachedMoviesLiveData: LiveData<List<MovieItem>>
+    private val favoriteMoviesLiveData: LiveData<List<MovieItem>>
     private var selectedMovieLiveData = MutableLiveData<MovieItem>()
     private var errorLiveData = MutableLiveData<String>()
     var progress = MutableLiveData<Boolean>()
 
-    val repository = Repository()
+    private val repository = Repository()
 
     init {
+        cachedMoviesLiveData = repository.getAllMovies()
         moviesLiveData.postValue(App.instance.items)
-        favoriteMoviesLiveData.postValue(App.instance.favouritesList)
+        favoriteMoviesLiveData = repository.getFavorites()
         progress.postValue(false)
     }
 
@@ -35,9 +37,8 @@ class MovieListViewModel : ViewModel() {
     val selectedMovie: LiveData<MovieItem>
         get() = selectedMovieLiveData
 
-    fun onMovieFavorite() {
-        favoriteMoviesLiveData.postValue(App.instance.favouritesList)
-        moviesLiveData.postValue(App.instance.items)
+    fun onMovieFavorite(movie: MovieItem) {
+        repository.setFavoriteStatus(movie)
     }
 
     fun onMovieSelect(movieItem: MovieItem) {
@@ -47,12 +48,14 @@ class MovieListViewModel : ViewModel() {
     fun moreMovies() {
         App.page++
         val message = App.instance.getTopMovies(App.page, progress)
-
         if (App.instance.error) {
             App.page--
             errorLiveData.postValue(message)
-        } else moviesLiveData.postValue(App.instance.items)
-
+        } else {
+            if (App.instance.appFirstRun) {
+                moviesLiveData.value = App.instance.items
+            } else cacheMovies(App.instance.items)
+        }
     }
 
     fun cacheMovies(movies: List<MovieItem>) = repository.addMovies(movies)

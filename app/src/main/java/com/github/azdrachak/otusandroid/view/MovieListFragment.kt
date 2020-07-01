@@ -79,6 +79,12 @@ class MovieListFragment : Fragment() {
             }
         )
 
+        viewModel.cachedMoviesLiveData.observe(
+            this.viewLifecycleOwner,
+            Observer {
+                it?.let { adapter.setItems(it) }
+            })
+
         viewModel.error.observe(this.viewLifecycleOwner,
             Observer { message ->
                 message?.let {

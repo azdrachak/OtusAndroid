@@ -26,15 +26,15 @@ class MainActivity :
         viewModel = ViewModelProvider(this).get(MovieListViewModel::class.java)
 
         if (App.instance.appFirstRun) {
-            viewModel.moreMovies()
 
             loadFragment(SplashFragment.TAG)
             App.instance.appFirstRun = false
 
             Handler().postDelayed(
                 {
+                    viewModel.moreMovies()
                     loadFragment(MovieListFragment.TAG)
-                }, 1000
+                }, 2000
             )
         }
 
@@ -72,20 +72,9 @@ class MainActivity :
     override fun onMovieFavorite(movieItem: MovieItem) {
         val action = if (movieItem.isFavorite) "delete" else "add"
 
-        val add = {
-            App.instance.favouritesList.add(movieItem)
-            movieItem.isFavorite = true
-        }
-
-        val delete = {
-            App.instance.favouritesList.remove(movieItem)
-            movieItem.isFavorite = false
-        }
-
-
         when (action) {
-            "add" -> add.invoke()
-            "delete" -> delete.invoke()
+            "add" -> movieItem.isFavorite = true
+            "delete" -> movieItem.isFavorite = false
         }
 
         when (action) {
@@ -97,7 +86,7 @@ class MainActivity :
             )
         }
 
-        viewModel.onMovieFavorite()
+        viewModel.onMovieFavorite(movieItem)
     }
 
     override fun onMovieSelected(movieItem: MovieItem) {

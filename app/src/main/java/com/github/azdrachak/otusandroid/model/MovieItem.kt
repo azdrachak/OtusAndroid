@@ -22,5 +22,7 @@ data class MovieItem(
     val posterPath: String?,
 
     @ColumnInfo(name = "is_favorite")
-    var isFavorite: Boolean = false
+    var isFavorite: Boolean = false,
+
+    val popularity: Double = 0.0
 )

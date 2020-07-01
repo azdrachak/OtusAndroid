@@ -8,7 +8,7 @@ import com.github.azdrachak.otusandroid.model.MovieItem
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-@Database(entities = [MovieItem::class], version = 2)
+@Database(entities = [MovieItem::class], version = 3)
 abstract class MoviesDb : RoomDatabase() {
 
     abstract fun getMovieDao(): MovieDao

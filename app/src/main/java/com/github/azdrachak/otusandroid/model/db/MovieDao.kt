@@ -10,7 +10,7 @@ import com.github.azdrachak.otusandroid.model.MovieItem
 @Dao
 interface MovieDao {
 
-    @Query("SELECT * FROM movies")
+    @Query("SELECT * FROM movies ORDER BY popularity DESC")
     fun getMovies(): LiveData<List<MovieItem>>
 
     @Query("SELECT * FROM movies WHERE is_favorite = 1")
