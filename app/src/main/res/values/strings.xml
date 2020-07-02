@@ -21,4 +21,6 @@
     <string name="lang">ru-RU</string>
     <string name="splash_screen" translatable="false">Splash screen</string>
     <string name="dataError">Ошибка получения данных</string>
+    <string name="appPrefs">movies_db_prefs</string>
+    <string name="prefs_saved_to_db">savedToDb</string>
 </resources>

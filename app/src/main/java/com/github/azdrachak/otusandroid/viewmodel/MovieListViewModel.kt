@@ -9,24 +9,28 @@ import com.github.azdrachak.otusandroid.view.Repository
 
 class MovieListViewModel : ViewModel() {
 
-    private var moviesLiveData = MutableLiveData<List<MovieItem>>()
     val cachedMoviesLiveData: LiveData<List<MovieItem>>
     private val favoriteMoviesLiveData: LiveData<List<MovieItem>>
     private var selectedMovieLiveData = MutableLiveData<MovieItem>()
     private var errorLiveData = MutableLiveData<String>()
     var progress = MutableLiveData<Boolean>()
+    private val _apiRequestTimeLiveData = MutableLiveData<Long>()
+    private val _savedToDbLiveData = MutableLiveData<Boolean>()
 
     private val repository = Repository()
 
     init {
         cachedMoviesLiveData = repository.getAllMovies()
-        moviesLiveData.postValue(App.instance.items)
         favoriteMoviesLiveData = repository.getFavorites()
         progress.postValue(false)
     }
 
-    val movies: LiveData<List<MovieItem>>
-        get() = moviesLiveData
+    val apiRequestTimeLiveData: LiveData<Long>
+        get() = _apiRequestTimeLiveData
+
+    val savedToDbLiveData: LiveData<Boolean>
+        get() = _savedToDbLiveData
+
 
     val favoriteMovies: LiveData<List<MovieItem>>
         get() = favoriteMoviesLiveData
@@ -46,19 +50,25 @@ class MovieListViewModel : ViewModel() {
     }
 
     fun moreMovies() {
-        App.page++
-        val message = App.instance.getTopMovies(App.page, progress)
-        if (App.instance.error) {
-            App.page--
-            errorLiveData.postValue(message)
-        } else {
-            if (App.instance.appFirstRun) {
-                moviesLiveData.value = App.instance.items
-            } else cacheMovies(App.instance.items)
+        val cachedRecordsCount = cachedMoviesLiveData.value?.size ?: App.apiPageSize
+        val pagesToGo = cachedRecordsCount / App.apiPageSize + 1
+        App.page = 0
+        while(App.page < pagesToGo) {
+            App.page++
+            val message = App.instance.getTopMovies(App.page, progress)
+            if (App.instance.error) {
+                App.page--
+                errorLiveData.postValue(message)
+            } else {
+                _apiRequestTimeLiveData.postValue(System.currentTimeMillis())
+            }
         }
     }
 
-    fun cacheMovies(movies: List<MovieItem>) = repository.addMovies(movies)
+    fun cacheMovies(movies: List<MovieItem>) {
+        repository.addMovies(movies)
+        _savedToDbLiveData.postValue(true)
+    }
 
     fun onErrorShow() {
         errorLiveData.value = null

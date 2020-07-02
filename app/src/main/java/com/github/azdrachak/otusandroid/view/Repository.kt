@@ -18,14 +18,16 @@ class Repository {
     }
 
     fun addMovies(movies: List<MovieItem>) {
+        val dbMovies = allMoviesLiveData.value ?: emptyList()
         movies.forEach {
-            val movie = movieDao.getMovieById(it.movieId!!).value
+            val movie = dbMovies.filter { movie -> movie.movieId == it.movieId }.singleOrNull()
             val isFavorite = movie?.isFavorite
             MoviesDb.dbWriteExecutor.execute {
                 movieDao.insertMovie(it)
-                if (isFavorite != null) movieDao.updateFavoriteStatus(it.movieId, isFavorite)
+                if (isFavorite != null) movieDao.updateFavoriteStatus(it.movieId!!, isFavorite)
             }
         }
+        App.instance.items.clear()
     }
 
     fun getAllMovies(): LiveData<List<MovieItem>> = allMoviesLiveData

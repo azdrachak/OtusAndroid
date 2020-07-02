@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import com.github.azdrachak.otusandroid.App
 import com.github.azdrachak.otusandroid.R
 import com.github.azdrachak.otusandroid.ilistener.MovieItemListener
 import com.github.azdrachak.otusandroid.model.MovieItem
@@ -47,7 +48,7 @@ class MovieListFragment : Fragment() {
         val adapter =
             MovieListAdapter(LayoutInflater.from(
                 activity
-            ), viewModel.movies.value as MutableList<MovieItem>,
+            ), viewModel.cachedMoviesLiveData.value as MutableList<MovieItem>? ?: mutableListOf(),
                 clickListener = { listener?.onMovieSelected(it) },
                 longClickListener = { listener?.onMovieFavorite(it) })
 
@@ -66,16 +67,8 @@ class MovieListFragment : Fragment() {
                 if (inProgress) {
                     progressBar.visibility = View.VISIBLE
                 } else {
-                    progressBar.visibility = View.GONE
+                    viewModel.cacheMovies(App.instance.items)
                 }
-            }
-        )
-
-        viewModel.movies.observe(
-            this.viewLifecycleOwner,
-            Observer { movieList ->
-                adapter.setItems(movieList!!)
-                viewModel.cacheMovies(movieList)
             }
         )
 
@@ -83,6 +76,7 @@ class MovieListFragment : Fragment() {
             this.viewLifecycleOwner,
             Observer {
                 it?.let { adapter.setItems(it) }
+                progressBar.visibility = View.GONE
             })
 
         viewModel.error.observe(this.viewLifecycleOwner,

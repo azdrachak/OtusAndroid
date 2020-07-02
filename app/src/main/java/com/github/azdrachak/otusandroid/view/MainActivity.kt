@@ -1,10 +1,13 @@
 package com.github.azdrachak.otusandroid.view
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.github.azdrachak.otusandroid.App
 import com.github.azdrachak.otusandroid.R
@@ -17,22 +20,37 @@ import com.google.android.material.snackbar.Snackbar
 class MainActivity :
     AppCompatActivity(), MovieItemListener {
 
-    lateinit var viewModel: MovieListViewModel
+    private val viewModel: MovieListViewModel by lazy {
+        ViewModelProvider(this)
+            .get(MovieListViewModel::class.java)
+    }
+
+    private lateinit var sharedPreferences: SharedPreferences
+    private val dataRequestInterval: Long = 20 * 60 * 1000 //20 minutes
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        viewModel = ViewModelProvider(this).get(MovieListViewModel::class.java)
+        sharedPreferences = getSharedPreferences("movies_prefs", Context.MODE_PRIVATE)
 
         if (App.instance.appFirstRun) {
 
             loadFragment(SplashFragment.TAG)
             App.instance.appFirstRun = false
 
+            // Запрос данных из АПИ, если в БД ничего не сохранялось или прошло > 20 минут с последнего запроса
+            if (!sharedPreferences.getBoolean("savedToDb", false)
+                || isDataRequestTime(
+                    System.currentTimeMillis()
+                    , sharedPreferences.getLong("apiAccessTime", System.currentTimeMillis())
+                )
+            ) {
+                viewModel.moreMovies()
+            }
+
             Handler().postDelayed(
                 {
-                    viewModel.moreMovies()
                     loadFragment(MovieListFragment.TAG)
                 }, 2000
             )
@@ -55,6 +73,22 @@ class MainActivity :
                 else -> false
             }
         }
+
+        viewModel.apiRequestTimeLiveData.observe(this, Observer {
+            it?.let {
+                val editor = sharedPreferences.edit()
+                editor.putLong("apiAccessTime", it)
+                editor.apply()
+            }
+        })
+
+        viewModel.savedToDbLiveData.observe(this, Observer {
+            it?.let {
+                val editor = sharedPreferences.edit()
+                editor.putBoolean("savedToDb", it)
+                editor.apply()
+            }
+        })
     }
 
     override fun onAttachFragment(fragment: Fragment) {
@@ -139,4 +173,7 @@ class MainActivity :
         snackbar.setAction(R.string.undo) { onMovieFavorite(movieItem) }
         snackbar.show()
     }
+
+    private fun isDataRequestTime(currentTime: Long, lastTime: Long): Boolean =
+        currentTime - lastTime >= dataRequestInterval
 }

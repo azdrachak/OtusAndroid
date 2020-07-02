@@ -32,6 +32,7 @@ class App : Application() {
         const val language = R.string.lang
         const val sortBy = "popularity.desc"
         var page = 0
+        val apiPageSize = 20
 
     }
 
