@@ -1,7 +1,9 @@
 package com.github.azdrachak.otusandroid
 
 import android.app.Application
+import androidx.lifecycle.MutableLiveData
 import com.github.azdrachak.otusandroid.model.MovieItem
+import com.github.azdrachak.otusandroid.model.db.MoviesDb
 import com.github.azdrachak.otusandroid.model.pojo.discover.Discover
 import com.github.azdrachak.otusandroid.model.retrofit.TmdbApi
 import okhttp3.OkHttpClient
@@ -16,7 +18,7 @@ class App : Application() {
     lateinit var discover: Discover
     var error = false
     val items: MutableList<MovieItem> = mutableListOf()
-    val favouritesList: MutableList<MovieItem> = mutableListOf()
+    lateinit var db: MoviesDb
 
     var appFirstRun = true
 
@@ -25,11 +27,12 @@ class App : Application() {
             private set
 
         const val BASE_URL = "https://api.themoviedb.org/3/"
-        const val IMAGE_BASE_URL = "https://image.tmdb.org/t/p/original/"
+        const val IMAGE_BASE_URL = "https://image.tmdb.org/t/p/original"
         const val API_KEY = "3e5a35776c3a22fa052f2038c3f87db3"
         const val language = R.string.lang
         const val sortBy = "popularity.desc"
-        var page = 1
+        var page = 0
+        val apiPageSize = 20
 
     }
 
@@ -37,10 +40,11 @@ class App : Application() {
         super.onCreate()
         instance = this
         initRetrofit()
-        getTopMovies(page)
+        db = MoviesDb.getInstance(this.applicationContext)
     }
 
-    fun getTopMovies(pageNumber: Int): String {
+    fun getTopMovies(pageNumber: Int, progress: MutableLiveData<Boolean>): String {
+        progress.postValue(true)
         instance.api.getCurrentTopFilms(
             API_KEY,
             resources.getString(language),
@@ -51,11 +55,13 @@ class App : Application() {
             override fun onFailure(call: Call<Discover?>, t: Throwable) {
                 discover = Discover()
                 error = true
+                progress.postValue(false)
             }
 
             override fun onResponse(call: Call<Discover?>, response: Response<Discover?>) {
                 discover = response.body()!!
                 populateMovies(discover)
+                progress.postValue(false)
             }
 
         })
@@ -78,13 +84,13 @@ class App : Application() {
     private fun populateMovies(discover: Discover) {
         discover.results?.forEach {
             val movieItem = MovieItem(
-                id = it.id.toString(),
+                movieId = it.id,
                 title = it.title,
                 description = it.overview,
                 poster = 0,
                 posterPath = IMAGE_BASE_URL + it.posterPath,
                 isFavorite = false,
-                isVisited = false
+                popularity = it.popularity ?: 0.0
             )
             items.add(movieItem)
         }

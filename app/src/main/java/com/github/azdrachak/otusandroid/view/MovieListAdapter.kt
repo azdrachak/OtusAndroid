@@ -44,9 +44,17 @@ class MovieListAdapter(
 
     fun setItems(movies: List<MovieItem>) {
         movies.forEach {
-            if (!listItems.contains(it)) {
+            if (!contains(listItems, it)) {
                 listItems.add(it)
             }
         }
+        notifyDataSetChanged()
+    }
+
+    private fun contains(movies: List<MovieItem>, movieItem: MovieItem): Boolean {
+        for (item in movies) {
+            if (item.movieId == movieItem.movieId) return true
+        }
+        return false
     }
 }

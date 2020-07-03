@@ -5,21 +5,32 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.azdrachak.otusandroid.App
 import com.github.azdrachak.otusandroid.model.MovieItem
+import com.github.azdrachak.otusandroid.view.Repository
 
 class MovieListViewModel : ViewModel() {
 
-    private var moviesLiveData = MutableLiveData<List<MovieItem>>()
-    private var favoriteMoviesLiveData = MutableLiveData<List<MovieItem>>()
+    val cachedMoviesLiveData: LiveData<List<MovieItem>>
+    private val favoriteMoviesLiveData: LiveData<List<MovieItem>>
     private var selectedMovieLiveData = MutableLiveData<MovieItem>()
     private var errorLiveData = MutableLiveData<String>()
+    var progress = MutableLiveData<Boolean>()
+    private val _apiRequestTimeLiveData = MutableLiveData<Long>()
+    private val _savedToDbLiveData = MutableLiveData<Boolean>()
+
+    private val repository = Repository()
 
     init {
-        moviesLiveData.postValue(App.instance.items)
-        favoriteMoviesLiveData.postValue(App.instance.favouritesList)
+        cachedMoviesLiveData = repository.getAllMovies()
+        favoriteMoviesLiveData = repository.getFavorites()
+        progress.postValue(false)
     }
 
-    val movies: LiveData<List<MovieItem>>
-        get() = moviesLiveData
+    val apiRequestTimeLiveData: LiveData<Long>
+        get() = _apiRequestTimeLiveData
+
+    val savedToDbLiveData: LiveData<Boolean>
+        get() = _savedToDbLiveData
+
 
     val favoriteMovies: LiveData<List<MovieItem>>
         get() = favoriteMoviesLiveData
@@ -30,9 +41,8 @@ class MovieListViewModel : ViewModel() {
     val selectedMovie: LiveData<MovieItem>
         get() = selectedMovieLiveData
 
-    fun onMovieFavorite() {
-        favoriteMoviesLiveData.postValue(App.instance.favouritesList)
-        moviesLiveData.postValue(App.instance.items)
+    fun onMovieFavorite(movie: MovieItem) {
+        repository.setFavoriteStatus(movie)
     }
 
     fun onMovieSelect(movieItem: MovieItem) {
@@ -40,13 +50,24 @@ class MovieListViewModel : ViewModel() {
     }
 
     fun moreMovies() {
-        App.page++
-        val message = App.instance.getTopMovies(App.page)
+        val cachedRecordsCount = cachedMoviesLiveData.value?.size ?: App.apiPageSize
+        val pagesToGo = cachedRecordsCount / App.apiPageSize + 1
+        App.page = 0
+        while(App.page < pagesToGo) {
+            App.page++
+            val message = App.instance.getTopMovies(App.page, progress)
+            if (App.instance.error) {
+                App.page--
+                errorLiveData.postValue(message)
+            } else {
+                _apiRequestTimeLiveData.postValue(System.currentTimeMillis())
+            }
+        }
+    }
 
-        if (App.instance.error) {
-            App.page--
-            errorLiveData.postValue(message)
-        } else moviesLiveData.value = App.instance.items
+    fun cacheMovies(movies: List<MovieItem>) {
+        repository.addMovies(movies)
+        _savedToDbLiveData.postValue(true)
     }
 
     fun onErrorShow() {

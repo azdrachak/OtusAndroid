@@ -44,7 +44,7 @@ class FavoritesFragment : Fragment() {
             MovieListAdapter(LayoutInflater.from(
                 activity
             ),
-                viewModel.favoriteMovies.value!! as MutableList<MovieItem>,
+                viewModel.favoriteMovies.value as MutableList<MovieItem>? ?: mutableListOf(),
                 clickListener = { listener?.onMovieSelected(it) },
                 longClickListener = { listener?.onMovieFavorite(it) })
 
@@ -61,7 +61,6 @@ class FavoritesFragment : Fragment() {
             this.viewLifecycleOwner,
             Observer { movieList ->
                 adapter.setItems(movieList!!)
-                adapter.notifyDataSetChanged()
             })
     }
 }

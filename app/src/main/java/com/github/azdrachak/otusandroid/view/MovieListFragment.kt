@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -42,10 +43,12 @@ class MovieListFragment : Fragment() {
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
 
+        val progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
+
         val adapter =
             MovieListAdapter(LayoutInflater.from(
                 activity
-            ), viewModel.movies.value as MutableList<MovieItem>,
+            ), viewModel.cachedMoviesLiveData.value as MutableList<MovieItem>? ?: mutableListOf(),
                 clickListener = { listener?.onMovieSelected(it) },
                 longClickListener = { listener?.onMovieFavorite(it) })
 
@@ -58,18 +61,27 @@ class MovieListFragment : Fragment() {
             )
         )
 
-
-        viewModel.movies.observe(
+        viewModel.progress.observe(
             this.viewLifecycleOwner,
-            Observer { movieList ->
-                adapter.setItems(movieList!!)
-                adapter.notifyDataSetChanged()
+            Observer { inProgress ->
+                if (inProgress) {
+                    progressBar.visibility = View.VISIBLE
+                } else {
+                    viewModel.cacheMovies(App.instance.items)
+                }
             }
         )
 
-        viewModel.error.observe(this.viewLifecycleOwner,
+        viewModel.cachedMoviesLiveData.observe(
+            this.viewLifecycleOwner,
             Observer {
-                if (App.instance.error && it != null) {
+                it?.let { adapter.setItems(it) }
+                progressBar.visibility = View.GONE
+            })
+
+        viewModel.error.observe(this.viewLifecycleOwner,
+            Observer { message ->
+                message?.let {
                     Toast.makeText(this.requireContext(), it, Toast.LENGTH_LONG).show()
                     viewModel.onErrorShow()
                 }
