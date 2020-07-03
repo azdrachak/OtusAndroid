@@ -17,6 +17,4 @@
     <string name="undo">Undo</string>
     <string name="lang">en-US</string>
     <string name="dataError">Data error</string>
-    <string name="appPrefs">movies_db_prefs</string>
-    <string name="prefs_saved_to_db">savedToDb</string>
 </resources>
