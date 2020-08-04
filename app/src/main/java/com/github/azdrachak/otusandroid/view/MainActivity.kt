@@ -1,9 +1,16 @@
 package com.github.azdrachak.otusandroid.view
 
+import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -11,6 +18,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.github.azdrachak.otusandroid.App
 import com.github.azdrachak.otusandroid.R
+import com.github.azdrachak.otusandroid.broadcast.ReminderBroadcastReceiver
 import com.github.azdrachak.otusandroid.ilistener.MovieItemListener
 import com.github.azdrachak.otusandroid.model.MovieItem
 import com.github.azdrachak.otusandroid.viewmodel.MovieListViewModel
@@ -88,6 +96,36 @@ class MainActivity :
                 editor.putBoolean("savedToDb", it)
                 editor.apply()
             }
+        })
+
+        viewModel.alarmViewModel.observe(this, Observer {
+            createNotificationChannel()
+            Toast.makeText(
+                applicationContext,
+                getString(R.string.notification_toast),
+                Toast.LENGTH_LONG
+            ).show()
+
+            val intent = Intent(applicationContext, ReminderBroadcastReceiver::class.java)
+            intent.putExtra("title", it.movieTitle) // notification content
+            intent.putExtra("message", getString(R.string.notification_text)) // notification title
+            intent.putExtra("movieId", it.movieId.toString())
+            val pendingIntent = PendingIntent.getBroadcast(
+                applicationContext,
+                it.movieId,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+
+            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val timeAtButtonClick = System.currentTimeMillis()
+            val tenSecondsInMillis = 1000 * 10
+
+            alarmManager.set(
+                AlarmManager.RTC_WAKEUP,
+                timeAtButtonClick + tenSecondsInMillis,
+                pendingIntent
+            )
         })
     }
 
@@ -176,4 +214,19 @@ class MainActivity :
 
     private fun isDataRequestTime(currentTime: Long, lastTime: Long): Boolean =
         currentTime - lastTime >= dataRequestInterval
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = getString(R.string.channel_name)
+            val description = getString(R.string.channel_desc)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+
+            val notificationChannel =
+                NotificationChannel(App.CHANNEL_ID, name, importance)
+            notificationChannel.description = description
+
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
+    }
 }

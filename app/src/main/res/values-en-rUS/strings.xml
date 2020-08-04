@@ -5,7 +5,7 @@
     <string name="invitationTitle">Send email!</string>
     <string name="invitationSubject">Look at this wonderful app!</string>
     <string name="sendButtonName">Send!</string>
-    <string name="invitationText">It searches movies! (Will be I guess)</string>
+    <string name="invitationText">It searches movies!</string>
     <string name="exitPrompt">Are you sure you want to leave?</string>
     <string name="exitTitle">Exit</string>
     <string name="exitYes">Yes</string>
@@ -17,4 +17,8 @@
     <string name="undo">Undo</string>
     <string name="lang">en-US</string>
     <string name="dataError">Data error</string>
+    <string name="watch_later">Watch later</string>
+    <string name="channel_desc">Channel for movies notifications</string>
+    <string name="notification_toast">Notification set</string>
+    <string name="notification_text">You wanted to watch</string>
 </resources>
