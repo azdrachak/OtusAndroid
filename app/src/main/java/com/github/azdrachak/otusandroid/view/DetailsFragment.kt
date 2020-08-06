@@ -22,7 +22,7 @@ class DetailsFragment : Fragment(),
     DatePickerDialog.OnDateSetListener,
     TimePickerDialog.OnTimeSetListener {
 
-    val movieAlarm = MovieAlarmDateTime()
+    private val movieAlarm = MovieAlarmDateTime()
     var day = 0
     var month: Int = 0
     var year: Int = 0
@@ -64,6 +64,7 @@ class DetailsFragment : Fragment(),
         viewModel.selectedMovie.observe(this.viewLifecycleOwner, Observer { item ->
             movieAlarm.movieId = item.movieId!!
             movieAlarm.movieTitle = item.title!!
+            movieAlarm.movieItem = item
             view.findViewById<Toolbar>(R.id.pageNameTextView).title = item.title
             view.findViewById<TextView>(R.id.movieDescription).text = item.description
             Glide

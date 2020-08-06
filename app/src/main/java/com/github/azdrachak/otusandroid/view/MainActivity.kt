@@ -24,6 +24,7 @@ import com.github.azdrachak.otusandroid.model.MovieItem
 import com.github.azdrachak.otusandroid.viewmodel.MovieListViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
+import java.util.*
 
 class MainActivity :
     AppCompatActivity(), MovieItemListener {
@@ -37,10 +38,18 @@ class MainActivity :
     private val dataRequestInterval: Long = 20 * 60 * 1000 //20 minutes
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        sharedPreferences = getSharedPreferences("movies_prefs", Context.MODE_PRIVATE)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        sharedPreferences = getSharedPreferences("movies_prefs", Context.MODE_PRIVATE)
+        val notificationMovieId = intent.getStringExtra("movieId")
+        notificationMovieId?.let {
+            val movieItem = getMovieItemFromSharedPrefs(it)
+            deleteMovieItemToSharedPrefs(movieItem)
+            onMovieSelected(movieItem)
+        }
 
         if (App.instance.appFirstRun) {
 
@@ -118,14 +127,24 @@ class MainActivity :
             )
 
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            val timeAtButtonClick = System.currentTimeMillis()
-            val tenSecondsInMillis = 1000 * 10
+
+            val notificationTimeDate: Calendar = Calendar.getInstance()
+            with(notificationTimeDate) {
+                set(Calendar.YEAR, it.year)
+                set(Calendar.MONTH, it.month)
+                set(Calendar.DATE, it.day)
+                set(Calendar.HOUR, it.hour)
+                set(Calendar.MINUTE, it.minute)
+                set(Calendar.SECOND, 0)
+            }
 
             alarmManager.set(
                 AlarmManager.RTC_WAKEUP,
-                timeAtButtonClick + tenSecondsInMillis,
+                notificationTimeDate.timeInMillis,
                 pendingIntent
             )
+
+            saveMovieItemToSharedPrefs(it.movieItem!!)
         })
     }
 
@@ -228,5 +247,38 @@ class MainActivity :
             val notificationManager = getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(notificationChannel)
         }
+    }
+
+    private fun saveMovieItemToSharedPrefs(movieItem: MovieItem) {
+        val editor = sharedPreferences.edit()
+        val prefix: String = movieItem.movieId.toString()
+        editor.putInt("movieId_$prefix", movieItem.movieId!!)
+        editor.putString("title_$prefix", movieItem.title!!)
+        editor.putString("description_$prefix", movieItem.description)
+        editor.putString("posterPath_$prefix", movieItem.posterPath)
+        editor.apply()
+    }
+
+    private fun getMovieItemFromSharedPrefs(movieId: String): MovieItem {
+        val savedMovieId = sharedPreferences.getInt("movieId_$movieId", 0)
+        val title = sharedPreferences.getString("title_$movieId", "")
+        val description = sharedPreferences.getString("description_$movieId", "")
+        val posterPath = sharedPreferences.getString("posterPath_$movieId", "")
+        return MovieItem(
+            movieId = savedMovieId,
+            title = title,
+            description = description,
+            posterPath = posterPath
+        )
+    }
+
+    private fun deleteMovieItemToSharedPrefs(movieItem: MovieItem) {
+        val editor = sharedPreferences.edit()
+        val prefix: String = movieItem.movieId.toString()
+        editor.remove("movieId_$prefix")
+        editor.remove("title_$prefix")
+        editor.remove("description_$prefix")
+        editor.remove("posterPath_$prefix")
+        editor.apply()
     }
 }

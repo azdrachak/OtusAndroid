@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">OtusAndroid</string>
+    <string name="app_name" translatable="false">AZ Movies</string>
     <string name="appName">Поиск фильмов</string>
     <string name="poster_description" translatable="false">Movie poster</string>
     <string name="inviteFriendButton">Пригласить друга</string>
