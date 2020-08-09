@@ -26,6 +26,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
+
 class MainActivity :
     AppCompatActivity(), MovieItemListener {
 
@@ -45,32 +46,37 @@ class MainActivity :
         setContentView(R.layout.activity_main)
 
         val notificationMovieId = intent.getStringExtra("movieId")
-        notificationMovieId?.let {
-            val movieItem = getMovieItemFromSharedPrefs(it)
-            deleteMovieItemToSharedPrefs(movieItem)
-            onMovieSelected(movieItem)
-        }
 
-        if (App.instance.appFirstRun) {
-
-            loadFragment(SplashFragment.TAG)
-            App.instance.appFirstRun = false
-
-            // Запрос данных из АПИ, если в БД ничего не сохранялось или прошло > 20 минут с последнего запроса
-            if (!sharedPreferences.getBoolean("savedToDb", false)
-                || isDataRequestTime(
-                    System.currentTimeMillis()
-                    , sharedPreferences.getLong("apiAccessTime", System.currentTimeMillis())
-                )
-            ) {
-                viewModel.moreMovies()
+        when {
+            notificationMovieId != null -> {
+                val movieItem = getMovieItemFromSharedPrefs(notificationMovieId)
+                loadFragment(MovieListFragment.TAG)
+                deleteMovieItemToSharedPrefs(movieItem)
+                onMovieSelected(movieItem)
+                App.instance.appFirstRun = false
             }
+            App.instance.appFirstRun -> {
 
-            Handler().postDelayed(
-                {
-                    loadFragment(MovieListFragment.TAG)
-                }, 2000
-            )
+                loadFragment(SplashFragment.TAG)
+                App.instance.appFirstRun = false
+
+                // Запрос данных из АПИ, если в БД ничего не сохранялось или прошло > 20 минут с последнего запроса
+                if (!sharedPreferences.getBoolean("savedToDb", false)
+                    || isDataRequestTime(
+                        System.currentTimeMillis()
+                        , sharedPreferences.getLong("apiAccessTime", System.currentTimeMillis())
+                    )
+                ) {
+                    viewModel.moreMovies()
+                }
+
+                Handler().postDelayed(
+                    {
+                        loadFragment(MovieListFragment.TAG)
+                    }, 2000
+                )
+            }
+            else -> loadFragment(MovieListFragment.TAG)
         }
 
         findViewById<BottomNavigationView>(R.id.navigation).setOnNavigationItemSelectedListener {
@@ -200,7 +206,7 @@ class MainActivity :
             val bld = AlertDialog.Builder(this)
             bld.setTitle(R.string.exitTitle)
             bld.setMessage(R.string.exitPrompt)
-            bld.setPositiveButton(R.string.exitYes) { _, _ -> super.onBackPressed() }
+            bld.setPositiveButton(R.string.exitYes) { _, _ -> super.finishAffinity() }
             bld.setNegativeButton(R.string.exitNo) { dialog, _ -> dialog.cancel() }
             bld.create().show()
         }
