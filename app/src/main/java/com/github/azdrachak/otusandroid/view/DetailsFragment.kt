@@ -86,7 +86,7 @@ class DetailsFragment : Fragment(),
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        movieAlarm.day = day
+        movieAlarm.day = dayOfMonth
         movieAlarm.month = month
         movieAlarm.year = year
 
