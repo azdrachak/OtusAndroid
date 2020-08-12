@@ -41,12 +41,15 @@ class FavoritesFragment : Fragment() {
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
 
         val adapter =
-            MovieListAdapter(LayoutInflater.from(
-                activity
-            ),
+            MovieListAdapter(
+                LayoutInflater.from(
+                    activity
+                ),
                 viewModel.favoriteMovies.value as MutableList<MovieItem>? ?: mutableListOf(),
                 clickListener = { listener?.onMovieSelected(it) },
-                longClickListener = { listener?.onMovieFavorite(it) })
+                longClickListener = { listener?.onMovieFavorite(it) },
+                viewModel = viewModel
+            )
 
         recyclerView.adapter = adapter
 

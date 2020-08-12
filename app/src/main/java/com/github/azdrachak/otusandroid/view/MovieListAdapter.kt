@@ -5,12 +5,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.azdrachak.otusandroid.R
 import com.github.azdrachak.otusandroid.model.MovieItem
+import com.github.azdrachak.otusandroid.viewmodel.MovieListViewModel
+import kotlinx.android.synthetic.main.movie_item.view.*
 
 class MovieListAdapter(
     private val inflater: LayoutInflater,
     private var listItems: MutableList<MovieItem>,
     private val clickListener: ((movieItem: MovieItem) -> Unit),
-    private val longClickListener: ((movieItem: MovieItem) -> Unit)
+    private val longClickListener: ((movieItem: MovieItem) -> Unit),
+    private val viewModel: MovieListViewModel
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -23,7 +26,8 @@ class MovieListAdapter(
                 R.layout.movie_item,
                 parent,
                 false
-            )
+            ),
+            viewModel
         )
     }
 
@@ -35,9 +39,8 @@ class MovieListAdapter(
             holder.itemView.setOnClickListener {
                 clickListener(listItems[position])
             }
-            holder.itemView.setOnLongClickListener {
+            holder.itemView.heart.setOnClickListener {
                 longClickListener(listItems[position])
-                true
             }
         }
     }

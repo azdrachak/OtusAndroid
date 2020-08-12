@@ -17,7 +17,7 @@ class MovieListViewModel : ViewModel() {
     var progress = MutableLiveData<Boolean>()
     private val _apiRequestTimeLiveData = MutableLiveData<Long>()
     private val _savedToDbLiveData = MutableLiveData<Boolean>()
-    private val _alarmViewModel = MutableLiveData<MovieAlarmDateTime>()
+    private val _alarmLiveData = MutableLiveData<MovieAlarmDateTime>()
 
     private val repository = Repository()
 
@@ -27,8 +27,8 @@ class MovieListViewModel : ViewModel() {
         progress.postValue(false)
     }
 
-    val alarmViewModel: LiveData<MovieAlarmDateTime>
-        get() = _alarmViewModel
+    val alarmLiveData: LiveData<MovieAlarmDateTime>
+        get() = _alarmLiveData
 
     val apiRequestTimeLiveData: LiveData<Long>
         get() = _apiRequestTimeLiveData
@@ -55,7 +55,7 @@ class MovieListViewModel : ViewModel() {
     }
 
     fun onSetAlarm(alarmData: MovieAlarmDateTime) {
-        _alarmViewModel.postValue(alarmData)
+        _alarmLiveData.postValue(alarmData)
     }
 
     fun moreMovies() {
@@ -82,5 +82,9 @@ class MovieListViewModel : ViewModel() {
     fun onErrorShow() {
         errorLiveData.value = null
         App.instance.error = false
+    }
+
+    fun clearAlarmLiveData() {
+        _alarmLiveData.value = null
     }
 }

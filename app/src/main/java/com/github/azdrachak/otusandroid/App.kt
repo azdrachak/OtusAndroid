@@ -5,6 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import com.github.azdrachak.otusandroid.model.MovieItem
 import com.github.azdrachak.otusandroid.model.db.MoviesDb
 import com.github.azdrachak.otusandroid.model.pojo.discover.Discover
+import com.github.azdrachak.otusandroid.model.retrofit.NetworkConstants.API_KEY
+import com.github.azdrachak.otusandroid.model.retrofit.NetworkConstants.BASE_URL
+import com.github.azdrachak.otusandroid.model.retrofit.NetworkConstants.IMAGE_BASE_URL
+import com.github.azdrachak.otusandroid.model.retrofit.NetworkConstants.language
+import com.github.azdrachak.otusandroid.model.retrofit.NetworkConstants.sortBy
 import com.github.azdrachak.otusandroid.model.retrofit.TmdbApi
 import okhttp3.OkHttpClient
 import retrofit2.Call
@@ -27,13 +32,8 @@ class App : Application() {
             private set
 
         const val CHANNEL_ID = "MovieDB"
-        const val BASE_URL = "https://api.themoviedb.org/3/"
-        const val IMAGE_BASE_URL = "https://image.tmdb.org/t/p/original"
-        const val API_KEY = "3e5a35776c3a22fa052f2038c3f87db3"
-        const val language = R.string.lang
-        const val sortBy = "popularity.desc"
         var page = 0
-        val apiPageSize = 20
+        const val apiPageSize = 20
 
     }
 

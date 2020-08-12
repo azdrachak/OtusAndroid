@@ -24,7 +24,6 @@ import com.github.azdrachak.otusandroid.model.MovieItem
 import com.github.azdrachak.otusandroid.viewmodel.MovieListViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
-import java.util.*
 
 
 class MainActivity :
@@ -113,44 +112,42 @@ class MainActivity :
             }
         })
 
-        viewModel.alarmViewModel.observe(this, Observer {
-            createNotificationChannel()
-            Toast.makeText(
-                applicationContext,
-                getString(R.string.notification_toast),
-                Toast.LENGTH_LONG
-            ).show()
+        viewModel.alarmLiveData.observe(this, Observer {
+            it?.let {
+                createNotificationChannel()
 
-            val intent = Intent(applicationContext, ReminderBroadcastReceiver::class.java)
-            intent.putExtra("title", it.movieTitle) // notification content
-            intent.putExtra("message", getString(R.string.notification_text)) // notification title
-            intent.putExtra("movieId", it.movieId.toString())
-            val pendingIntent = PendingIntent.getBroadcast(
-                applicationContext,
-                it.movieId,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
+                val intent = Intent(applicationContext, ReminderBroadcastReceiver::class.java)
+                intent.putExtra("title", it.movieTitle) // notification content
+                intent.putExtra(
+                    "message",
+                    getString(R.string.notification_text)
+                ) // notification title
+                intent.putExtra("movieId", it.movieId.toString())
+                val pendingIntent = PendingIntent.getBroadcast(
+                    applicationContext,
+                    it.movieId,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
 
-            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-            val notificationTimeDate: Calendar = Calendar.getInstance()
-            with(notificationTimeDate) {
-                set(Calendar.YEAR, it.year)
-                set(Calendar.MONTH, it.month)
-                set(Calendar.DATE, it.day)
-                set(Calendar.HOUR, it.hour)
-                set(Calendar.MINUTE, it.minute)
-                set(Calendar.SECOND, 0)
+                alarmManager.set(
+                    AlarmManager.RTC_WAKEUP,
+                    it.dateTime!!.timeInMillis,
+                    pendingIntent
+                )
+
+                saveMovieItemToSharedPrefs(it.movieItem!!)
+
+                Toast.makeText(
+                    applicationContext,
+                    getString(R.string.notification_toast),
+                    Toast.LENGTH_LONG
+                ).show()
+
+                viewModel.clearAlarmLiveData()
             }
-
-            alarmManager.set(
-                AlarmManager.RTC_WAKEUP,
-                notificationTimeDate.timeInMillis,
-                pendingIntent
-            )
-
-            saveMovieItemToSharedPrefs(it.movieItem!!)
         })
     }
 
@@ -251,7 +248,7 @@ class MainActivity :
             notificationChannel.description = description
 
             val notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(notificationChannel)
+            notificationManager?.createNotificationChannel(notificationChannel)
         }
     }
 

@@ -15,7 +15,7 @@ abstract class MoviesDb : RoomDatabase() {
 
     companion object {
 
-        private val NUMBER_OF_THREADS = 4
+        private const val NUMBER_OF_THREADS = 4
         val dbWriteExecutor: ExecutorService = Executors.newFixedThreadPool(NUMBER_OF_THREADS)
 
         @Volatile
