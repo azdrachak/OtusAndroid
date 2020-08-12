@@ -20,7 +20,7 @@ class Repository {
     fun addMovies(movies: List<MovieItem>) {
         val dbMovies = allMoviesLiveData.value ?: emptyList()
         movies.forEach {
-            val movie = dbMovies.filter { movie -> movie.movieId == it.movieId }.singleOrNull()
+            val movie = dbMovies.singleOrNull { movie -> movie.movieId == it.movieId }
             val isFavorite = movie?.isFavorite
             MoviesDb.dbWriteExecutor.execute {
                 movieDao.insertMovie(it)

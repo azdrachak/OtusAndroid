@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">OtusAndroid</string>
+    <string name="app_name" translatable="false">AZ Movies</string>
     <string name="appName">Поиск фильмов</string>
     <string name="poster_description" translatable="false">Movie poster</string>
     <string name="inviteFriendButton">Пригласить друга</string>
@@ -7,7 +7,7 @@
     <string name="emailHint" translatable="false">Email</string>
     <string name="invitationSubject">Посмотри на это прекрасное приложение!</string>
     <string name="sendButtonName">Отправить!</string>
-    <string name="invitationText">Оно ищет фильмы! (будет, наверное)</string>
+    <string name="invitationText">Оно ищет фильмы!</string>
     <string name="text_placeholder" translatable="false">Text placeholder</string>
     <string name="exitPrompt">Точно хотите выйти?</string>
     <string name="exitTitle">Выход</string>
@@ -21,4 +21,9 @@
     <string name="lang">ru-RU</string>
     <string name="splash_screen" translatable="false">Splash screen</string>
     <string name="dataError">Ошибка получения данных</string>
+    <string name="watch_later">Посмотреть позже</string>
+    <string name="channel_desc">Канал для уведомлений о просмотре фильма</string>
+    <string name="channel_name" translatable="false">OtusMoviesChannel</string>
+    <string name="notification_toast">Напоминание установлено</string>
+    <string name="notification_text">Вы хотели посмотреть</string>
 </resources>

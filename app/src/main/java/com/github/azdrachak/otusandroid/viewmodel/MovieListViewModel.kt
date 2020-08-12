@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.azdrachak.otusandroid.App
 import com.github.azdrachak.otusandroid.model.MovieItem
+import com.github.azdrachak.otusandroid.model.pojo.MovieAlarmDateTime
 import com.github.azdrachak.otusandroid.view.Repository
 
 class MovieListViewModel : ViewModel() {
@@ -16,6 +17,7 @@ class MovieListViewModel : ViewModel() {
     var progress = MutableLiveData<Boolean>()
     private val _apiRequestTimeLiveData = MutableLiveData<Long>()
     private val _savedToDbLiveData = MutableLiveData<Boolean>()
+    private val _alarmLiveData = MutableLiveData<MovieAlarmDateTime>()
 
     private val repository = Repository()
 
@@ -24,6 +26,9 @@ class MovieListViewModel : ViewModel() {
         favoriteMoviesLiveData = repository.getFavorites()
         progress.postValue(false)
     }
+
+    val alarmLiveData: LiveData<MovieAlarmDateTime>
+        get() = _alarmLiveData
 
     val apiRequestTimeLiveData: LiveData<Long>
         get() = _apiRequestTimeLiveData
@@ -49,11 +54,15 @@ class MovieListViewModel : ViewModel() {
         selectedMovieLiveData.postValue(movieItem)
     }
 
+    fun onSetAlarm(alarmData: MovieAlarmDateTime) {
+        _alarmLiveData.postValue(alarmData)
+    }
+
     fun moreMovies() {
         val cachedRecordsCount = cachedMoviesLiveData.value?.size ?: App.apiPageSize
         val pagesToGo = cachedRecordsCount / App.apiPageSize + 1
         App.page = 0
-        while(App.page < pagesToGo) {
+        while (App.page < pagesToGo) {
             App.page++
             val message = App.instance.getTopMovies(App.page, progress)
             if (App.instance.error) {
@@ -73,5 +82,9 @@ class MovieListViewModel : ViewModel() {
     fun onErrorShow() {
         errorLiveData.value = null
         App.instance.error = false
+    }
+
+    fun clearAlarmLiveData() {
+        _alarmLiveData.value = null
     }
 }

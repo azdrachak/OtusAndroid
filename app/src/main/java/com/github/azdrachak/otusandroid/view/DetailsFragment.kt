@@ -15,6 +15,8 @@ import com.github.azdrachak.otusandroid.viewmodel.MovieListViewModel
 
 class DetailsFragment : Fragment() {
 
+    var movieId: Int = 0
+
     companion object {
         const val TAG = "DetailsFragment"
     }
@@ -34,9 +36,6 @@ class DetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        val item: MovieItem = arguments?.getParcelable(
-//            Objects.MOVIE_ITEM.name
-//        )!!
 
         viewModel.selectedMovie.observe(this.viewLifecycleOwner, Observer { item ->
             view.findViewById<Toolbar>(R.id.pageNameTextView).title = item.title
@@ -48,7 +47,5 @@ class DetailsFragment : Fragment() {
                 .fitCenter()
                 .into(view.findViewById(R.id.detailsPoster))
         })
-
-
     }
 }

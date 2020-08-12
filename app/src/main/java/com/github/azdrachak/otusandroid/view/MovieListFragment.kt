@@ -46,11 +46,15 @@ class MovieListFragment : Fragment() {
         val progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
 
         val adapter =
-            MovieListAdapter(LayoutInflater.from(
-                activity
-            ), viewModel.cachedMoviesLiveData.value as MutableList<MovieItem>? ?: mutableListOf(),
+            MovieListAdapter(
+                LayoutInflater.from(
+                    activity
+                ),
+                viewModel.cachedMoviesLiveData.value as MutableList<MovieItem>? ?: mutableListOf(),
                 clickListener = { listener?.onMovieSelected(it) },
-                longClickListener = { listener?.onMovieFavorite(it) })
+                longClickListener = { listener?.onMovieFavorite(it) },
+                viewModel = viewModel
+            )
 
         recyclerView.adapter = adapter
 
