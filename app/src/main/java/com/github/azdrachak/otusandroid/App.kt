@@ -1,6 +1,8 @@
 package com.github.azdrachak.otusandroid
 
 import android.app.Application
+import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.github.azdrachak.otusandroid.model.MovieItem
 import com.github.azdrachak.otusandroid.model.db.MoviesDb
@@ -11,12 +13,16 @@ import com.github.azdrachak.otusandroid.model.retrofit.NetworkConstants.IMAGE_BA
 import com.github.azdrachak.otusandroid.model.retrofit.NetworkConstants.language
 import com.github.azdrachak.otusandroid.model.retrofit.NetworkConstants.sortBy
 import com.github.azdrachak.otusandroid.model.retrofit.TmdbApi
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.iid.FirebaseInstanceId
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.*
 
 class App : Application() {
     private lateinit var api: TmdbApi
@@ -42,6 +48,12 @@ class App : Application() {
         instance = this
         initRetrofit()
         db = MoviesDb.getInstance(this.applicationContext)
+
+        getFirebaseToken()
+
+        setUserID().let {
+            FirebaseCrashlytics.getInstance().setUserId(it)
+        }
     }
 
     fun getTopMovies(pageNumber: Int, progress: MutableLiveData<Boolean>): String {
@@ -95,5 +107,37 @@ class App : Application() {
             )
             items.add(movieItem)
         }
+    }
+
+
+    private fun getFirebaseToken() {
+        FirebaseInstanceId.getInstance().instanceId
+            .addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w("AZTAG", "getInstanceId failed", task.exception)
+                    return@OnCompleteListener
+                }
+
+                // Get new Instance ID token
+                val token = task.result?.token
+
+                // Log and toast
+                val msg = token ?: ""
+                Log.d("AZTAG", msg)
+            })
+    }
+
+    private fun createUserId(): String = UUID.randomUUID().toString()
+
+    private fun setUserID(): String {
+        val sharedPreferences = getSharedPreferences("movies_prefs", Context.MODE_PRIVATE)
+        var userId: String = sharedPreferences.getString("userId", "")!!
+        if (userId == "") {
+            userId = createUserId()
+            val editor = sharedPreferences.edit()
+            editor.putString("userId", userId)
+            editor.apply()
+        }
+        return userId
     }
 }

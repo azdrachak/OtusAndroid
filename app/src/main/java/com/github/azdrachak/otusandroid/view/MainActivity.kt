@@ -14,7 +14,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.github.azdrachak.otusandroid.App
 import com.github.azdrachak.otusandroid.R
@@ -47,6 +46,21 @@ class MainActivity :
         val notificationMovieId = intent.getStringExtra("movieId")
 
         when {
+            notificationMovieId == "FCM" -> {
+                val savedMovieId = 1000
+                val title = intent.getStringExtra("title")
+                val description = intent.getStringExtra("description")
+                val posterPath = intent.getStringExtra("posterPath")
+                val movieItem = MovieItem(
+                    movieId = savedMovieId,
+                    title = title,
+                    description = description,
+                    posterPath = posterPath
+                )
+                loadFragment(MovieListFragment.TAG)
+                onMovieSelected(movieItem)
+                App.instance.appFirstRun = false
+            }
             notificationMovieId != null -> {
                 val movieItem = getMovieItemFromSharedPrefs(notificationMovieId)
                 loadFragment(MovieListFragment.TAG)
@@ -62,8 +76,8 @@ class MainActivity :
                 // Запрос данных из АПИ, если в БД ничего не сохранялось или прошло > 20 минут с последнего запроса
                 if (!sharedPreferences.getBoolean("savedToDb", false)
                     || isDataRequestTime(
-                        System.currentTimeMillis()
-                        , sharedPreferences.getLong("apiAccessTime", System.currentTimeMillis())
+                        System.currentTimeMillis(),
+                        sharedPreferences.getLong("apiAccessTime", System.currentTimeMillis())
                     )
                 ) {
                     viewModel.moreMovies()
@@ -96,7 +110,7 @@ class MainActivity :
             }
         }
 
-        viewModel.apiRequestTimeLiveData.observe(this, Observer {
+        viewModel.apiRequestTimeLiveData.observe(this, {
             it?.let {
                 val editor = sharedPreferences.edit()
                 editor.putLong("apiAccessTime", it)
@@ -104,7 +118,7 @@ class MainActivity :
             }
         })
 
-        viewModel.savedToDbLiveData.observe(this, Observer {
+        viewModel.savedToDbLiveData.observe(this, {
             it?.let {
                 val editor = sharedPreferences.edit()
                 editor.putBoolean("savedToDb", it)
@@ -112,7 +126,7 @@ class MainActivity :
             }
         })
 
-        viewModel.alarmLiveData.observe(this, Observer {
+        viewModel.alarmLiveData.observe(this, {
             it?.let {
                 createNotificationChannel()
 
